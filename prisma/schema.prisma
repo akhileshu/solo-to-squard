@@ -4,6 +4,12 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+/*
+after schema changes
+npx prisma migrate dev --name add_profileSetupDone
+
+*/
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -53,25 +59,25 @@ model VerificationToken {
 }
 
 model User {
-  id                  String     @id @default(cuid())
-  name                String?
-  email               String?    @unique
-  emailVerified       DateTime?  @map("email_verified")
-  image               String?
-  accounts            Account[]
-  sessions            Session[]
+  id                 String    @id @default(cuid())
+  name               String?
+  email              String?   @unique
+  emailVerified      DateTime? @map("email_verified")
+  image              String?
+  accounts           Account[]
+  sessions           Session[]
+  isProfileSetupDone Boolean   @default(false)
 
-// New fields for matching feature
+  // New fields for matching feature
   domain       Domain? // Optional for flexibility
-  skills       String[]   @default([]) // List of skills
-  learning     String[]   @default([]) // List of skills user wants to learn
-  goals        String[]   @default([]) // User's goals
-  availability Int?       // Hours per week
+  skills       String[] @default([]) // List of skills
+  learning     String[] @default([]) // List of skills user wants to learn
+  goals        String[] @default([]) // User's goals
+  availability Int? // Hours per week
 
   // Relations for Connections
   sentConnections     Connection[] @relation("SentConnections")
   receivedConnections Connection[] @relation("ReceivedConnections")
-
 
   @@map("users")
 }
@@ -97,13 +103,13 @@ enum ConnectionStatus {
 
 // New model for Connection Requests
 model Connection {
-  id        String   @id @default(cuid())
-  senderId  String
+  id         String           @id @default(cuid())
+  senderId   String
   receiverId String
-  message   String?  // Introductory message
-  status    ConnectionStatus @default(PENDING)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  message    String? // Introductory message
+  status     ConnectionStatus @default(PENDING)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
 
   sender   User @relation("SentConnections", fields: [senderId], references: [id], onDelete: Cascade)
   receiver User @relation("ReceivedConnections", fields: [receiverId], references: [id], onDelete: Cascade)

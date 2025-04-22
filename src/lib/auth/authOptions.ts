@@ -25,10 +25,20 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) token.id = user.id;
+
+      const dbUser = await prisma.user.findUnique({
+        where: { id: token.id as string },
+      });
+      if (dbUser) {
+        token.isProfileSetupDone = dbUser.isProfileSetupDone ?? false;
+      }
+
       return token;
     },
     async session({ session, token }) {
       if (session.user && token.id) session.user.id = token.id as string;
+      if (session.user && token.isProfileSetupDone !== undefined)
+        session.user.isProfileSetupDone = token.isProfileSetupDone as boolean;
       return session;
     },
   },

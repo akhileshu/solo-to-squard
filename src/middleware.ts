@@ -1,8 +1,15 @@
-import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "./lib/rateLimit";
 import { isMobileUserAgent } from "./lib/utils";
+import { authOptions } from "./lib/auth/authOptions";
 
-export function middleware(request: Request) {
+/**
+ *
+ * https://stackoverflow.com/questions/77115912/how-the-get-the-nextauth-session-in-a-middleware
+ *
+ */
+export async function middleware(request: NextRequest) {
   const isMaintenance = process.env.MAINTENANCE_MODE === "true";
   const url = new URL(request.url);
 
@@ -20,6 +27,25 @@ export function middleware(request: Request) {
 
   if (isMobileUserAgent(userAgent) && url.pathname !== "/mobile-warning") {
     return NextResponse.redirect(new URL("/mobile-warning", request.url));
+  }
+
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+    decode: authOptions.jwt?.decode,
+  });
+  const pathname = request.nextUrl.pathname;
+
+  if (!token || pathname === "/profile/setup") return NextResponse.next();
+  console.log({ token });
+
+  // todo fix bug : token.isProfileSetupDone , currently this added field is unavailable in token , so it does not redirect
+  // alternate solution :  Store isProfileSetupDone in a custom cookie at login.
+  // Then read it directly in middleware using request.cookies.get("your-cookie-name").
+  if (token.isProfileSetupDone === false && pathname !== "/profile/setup") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/profile/setup";
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();
