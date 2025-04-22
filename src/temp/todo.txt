@@ -1,0 +1,12 @@
+currently with this google auth setup we get only limited user data like mailid , img , etc
+profile setup
+
+make extra user fields options
+// Add these:
+  role           String?
+  skills         String[]   @default([])
+  goals          String?
+  timeCommitment String?
+  vibe           String?
+  
+auth -> check if profile incomplete (In middleware or layout) , navigate to /profile-setup

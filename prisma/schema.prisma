@@ -60,40 +60,56 @@ model User {
   image               String?
   accounts            Account[]
   sessions            Session[]
-  posts               Post[]
-  Bookmark            Bookmark[]
-  totalPostsCreated   Int        @default(0) // Tracks all-time created posts
-  totalPostsUpdated   Int        @default(0) // Tracks all-time updated posts
-  totalBookmarksAdded Int        @default(0) // Tracks total bookmarks created over time
+
+// New fields for matching feature
+  domain       Domain? // Optional for flexibility
+  skills       String[]   @default([]) // List of skills
+  learning     String[]   @default([]) // List of skills user wants to learn
+  goals        String[]   @default([]) // User's goals
+  availability Int?       // Hours per week
+
+  // Relations for Connections
+  sentConnections     Connection[] @relation("SentConnections")
+  receivedConnections Connection[] @relation("ReceivedConnections")
+
 
   @@map("users")
 }
 
-model Post {
-  id        Int        @id @default(autoincrement())
-  title     String
-  slug      String     @unique
-  content   String // MDX content stored as text
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  author    User       @relation(fields: [authorId], references: [id])
-  authorId  String
-  Bookmark  Bookmark[]
+// Define the Domain enum
+enum Domain {
+  BACKEND
+  FRONTEND
+  DESIGNING
+  DEVOPS
+  DATA_SCIENCE
+  MOBILE
+  QA
+  OTHER
 }
 
-// A User can have many Posts and many Bookmarks.
-// A Post has one author (a User) and can be bookmarked by many users.
-// A Bookmark links a single User and a single Post — making a many-to-many relationship between User and Post.
+// Define the ConnectionStatus enum
+enum ConnectionStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
 
-model Bookmark {
-  id           Int      @id @default(autoincrement())
-  userId       String
-  postId       Int
-  isBookmarked Boolean  @default(true)
-  createdAt    DateTime @default(now())
+// New model for Connection Requests
+model Connection {
+  id        String   @id @default(cuid())
+  senderId  String
+  receiverId String
+  message   String?  // Introductory message
+  status    ConnectionStatus @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
-  post Post @relation(fields: [postId], references: [id])
+  sender   User @relation("SentConnections", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedConnections", fields: [receiverId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, postId]) // one bookmark per user-post combination
+  @@unique([senderId, receiverId]) // Prevent duplicate requests
+  @@index([senderId])
+  @@index([receiverId])
+  @@map("connections")
 }
