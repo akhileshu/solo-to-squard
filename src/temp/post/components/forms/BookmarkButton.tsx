@@ -1,12 +1,12 @@
 "use client";
-import { Button, ButtonState } from "@/components/app/button";
+import { Button, ButtonState } from "@/lib/forms-inputs/button";
 import { useActionState, useEffect, useState } from "react";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import { isPostBookmarked, toggleBookmark } from "../../actions/postActions";
-import { useHandleFormState } from "@/lib/forms/useHandleFormState";
+import { useHandleFormState } from "@/lib/forms-inputs/useHandleFormState";
 import { initialState } from "@/lib/server-actions/handleAction";
 import { handleToastMessage } from "@/lib/tost/toast-utils";
-import AppForm from "@/components/app/form";
+import AppForm from "@/lib/forms-inputs/form";
 
 export default function ToggleBookmarkForm({ postId }: { postId: number }) {
   const [toggleBookmarkState, formAction, isPending] = useActionState(

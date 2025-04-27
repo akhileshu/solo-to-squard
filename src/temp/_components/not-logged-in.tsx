@@ -1,5 +1,5 @@
 import { getServerUser } from "@/lib/auth/lib";
-import { getMessage } from "@/features/message/lib/get-message";
+import { getMessage } from "@/lib/message/lib/get-message";
 import { StatusMessage } from "@/components/app/info";
 
 export default async function NotLoggedIn() {

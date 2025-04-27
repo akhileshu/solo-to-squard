@@ -1,10 +1,10 @@
-import { prisma } from "@/lib/db/prisma";
+import { myPrisma } from "@/lib/db/prisma";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: AuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(myPrisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -26,7 +26,7 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user }) {
       if (user) token.id = user.id;
 
-      const dbUser = await prisma.user.findUnique({
+      const dbUser = await myPrisma.user.findUnique({
         where: { id: token.id as string },
       });
       if (dbUser) {

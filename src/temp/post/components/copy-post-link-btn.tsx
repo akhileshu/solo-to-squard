@@ -1,4 +1,4 @@
-import { Button } from "@/components/app/button";
+import { Button } from "@/lib/forms-inputs/button";
 import { toast } from "sonner";
 
 export function CopyPostLinkButton({ slug }: { slug: string }) {

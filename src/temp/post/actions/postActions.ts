@@ -1,7 +1,7 @@
 "use server";
 import { getServerUser } from "@/lib/auth/lib";
-import { prisma } from "@/lib/db/prisma";
-import { getMessage } from "@/features/message/lib/get-message";
+import { myPrisma } from "@/lib/db/prisma";
+import { getMessage } from "@/lib/message/lib/get-message";
 import { Post, Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import {
@@ -40,7 +40,7 @@ export async function getPosts(
     const { data, error } = postQuerySchema.safeParse({ query });
     // todo : improve appmessages , maybe we need to include fielderrors in fetchresponse as well
     if (error) return fetchError(getMessage("post", "NOT_FOUND"));
-    const posts = await prisma.post.findMany({
+    const posts = await myPrisma.post.findMany({
       where: data.query
         ? {
             OR: [
@@ -61,7 +61,7 @@ export async function getLoggedInUsersPosts(): Promise<FetchResponse<Post[]>> {
   return handleFetchAction(async () => {
     const user = await getServerUser();
     if (!user) return fetchErrorNotLoggedIn;
-    const posts = await prisma.post.findMany({
+    const posts = await myPrisma.post.findMany({
       where: { authorId: user.id },
       orderBy: { createdAt: "desc" },
     });
@@ -73,7 +73,7 @@ export async function getPostBySlug(
   slug: string
 ): Promise<FetchResponse<PostWithAuthor>> {
   return handleFetchAction(async () => {
-    const post = await prisma.post.findUnique({
+    const post = await myPrisma.post.findUnique({
       where: { slug },
       include: { author: true },
     });
@@ -100,7 +100,7 @@ export async function createPost(
     const { data, fieldErrors } = parseFormData(formData, postCreateSchema);
     if (fieldErrors)
       return mutateError(getMessage("post", "CREATE_ERROR"), fieldErrors);
-    await prisma.post.create({
+    await myPrisma.post.create({
       data: {
         title: data.title,
         slug: generateSlug(data.title),
@@ -131,7 +131,7 @@ export async function updatePost(
     const { data, fieldErrors } = parseFormData(formData, postUpdateSchema);
     if (fieldErrors)
       return mutateError(getMessage("post", "UPDATE_ERROR"), fieldErrors);
-    await prisma.post.update({
+    await myPrisma.post.update({
       where: { id: data.id, authorId: user.id },
       data: {
         title: data.title,
@@ -154,7 +154,7 @@ export async function deletePost(
     const { data, fieldErrors } = parseFormData(formData, postDeleteSchema);
     if (fieldErrors)
       return mutateError(getMessage("post", "DELETE_ERROR"), fieldErrors);
-    await prisma.post.delete({ where: { id: data.id, authorId: user.id } });
+    await myPrisma.post.delete({ where: { id: data.id, authorId: user.id } });
     return mutateSuccess(getMessage("post", "DELETE_SUCCESS"));
   });
 }
@@ -189,11 +189,11 @@ export async function toggleBookmark(
     if (fieldErrors)
       return mutateError(getMessage("bookmark", "REMOVE_ERROR"), fieldErrors);
     const { postId } = data;
-    const existing = await prisma.bookmark.findUnique({
+    const existing = await myPrisma.bookmark.findUnique({
       where: { userId_postId: { userId: user.id, postId } },
     });
     if (existing) {
-      const updated = await prisma.bookmark.update({
+      const updated = await myPrisma.bookmark.update({
         where: { id: existing.id },
         data: { isBookmarked: !existing.isBookmarked },
       });
@@ -205,7 +205,7 @@ export async function toggleBookmark(
         { isBookmarked: updated.isBookmarked }
       );
     } else {
-      const created = await prisma.bookmark.create({
+      const created = await myPrisma.bookmark.create({
         data: { userId: user.id, postId, isBookmarked: true },
       });
       await incrementBookmarkCountInProd();
@@ -225,7 +225,7 @@ export async function getBookmarkedPosts(): Promise<
   return handleFetchAction(async () => {
     const user = await getServerUser();
     if (!user) return fetchErrorNotLoggedIn;
-    const bookmarkedPosts = await prisma.bookmark.findMany({
+    const bookmarkedPosts = await myPrisma.bookmark.findMany({
       where: { userId: user.id, isBookmarked: true },
       include: { post: true },
     });
@@ -240,7 +240,7 @@ export const isPostBookmarked = async (
     // return fetchErrorNotLoggedIn;
     const user = await getServerUser();
     if (!user) return fetchErrorNotLoggedIn;
-    const existing = await prisma.bookmark.findUnique({
+    const existing = await myPrisma.bookmark.findUnique({
       where: { userId_postId: { userId: user.id, postId } },
     });
 

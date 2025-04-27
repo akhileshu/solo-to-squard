@@ -1,4 +1,4 @@
-import { AppMessage } from "@/features/message/lib/define-messages";
+import { AppMessage } from "@/lib/message/lib/define-messages";
 import { cn } from "@/lib/utils";
 import { InfoIcon } from "lucide-react";
 import { AppCard } from "./card";

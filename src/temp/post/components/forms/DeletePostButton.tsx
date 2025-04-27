@@ -1,7 +1,7 @@
 "use client";
-import AppForm from "@/components/app/form";
+import AppForm from "@/lib/forms-inputs/form";
 import { initialState } from "@/lib/server-actions/handleAction";
-import { useHandleFormState } from "@/lib/forms/useHandleFormState";
+import { useHandleFormState } from "@/lib/forms-inputs/useHandleFormState";
 import { useActionState } from "react";
 import { deletePost } from "../../actions/postActions";
 

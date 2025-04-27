@@ -4,7 +4,7 @@ import Auth from "@/lib/auth/components";
 
 import { AppLink } from "@/components/app/link";
 import { getInternalHref } from "@/lib/getInternalHref";
-import { Search } from "../../../features/post/components/search";
+import { Search } from "../../../temp/post/components/search";
 
 export default function Navbar() {
   return (

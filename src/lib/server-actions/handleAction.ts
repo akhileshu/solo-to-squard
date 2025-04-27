@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AppMessage } from "@/features/message/lib/define-messages";
-import { getMessage } from "@/features/message/lib/get-message";
+import { AppMessage } from "@/lib/message/lib/define-messages";
+import { getMessage } from "@/lib/message/lib/get-message";
 import { Prisma } from "@prisma/client";
 import { z, ZodSchema } from "zod";
 import { getErrorMessage } from "../utils";

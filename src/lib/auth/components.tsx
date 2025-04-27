@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/app/button";
+import { Button } from "@/lib/forms-inputs/button";
 import { AppLink } from "@/components/app/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
@@ -24,13 +24,15 @@ export default function Auth() {
           <LogoutButton />
         </div>
       ) : (
-        <Button disabled={false} onClick={() => signIn("google")}>Sign In with Google</Button>
+        <Button disabled={false} onClick={() => signIn("google")}>
+          Sign In with Google
+        </Button>
       )}
     </div>
   );
 }
 
-function LogoutButton() { 
+function LogoutButton() {
   const router = useRouter();
 
   async function handleSignOut() {

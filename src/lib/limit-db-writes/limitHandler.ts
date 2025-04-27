@@ -1,6 +1,6 @@
-import { AppMessage } from "@/features/message/lib/define-messages";
-import { getMessage } from "@/features/message/lib/get-message";
-import { prisma } from "@/lib/db/prisma";
+import { AppMessage } from "@/lib/message/lib/define-messages";
+import { getMessage } from "@/lib/message/lib/get-message";
+import { myPrisma } from "@/lib/db/prisma";
 import { mutateError } from "@/lib/server-actions/handleAction";
 import { APP_SETTINGS, getErrorMessage } from "@/lib/utils";
 import { LIMIT_MAPPING, LimitField } from "./schema-config";
@@ -13,7 +13,7 @@ export async function checkLimit(
   try {
     if (!APP_SETTINGS.isProd) return null; // Skip in dev
     const limitKey = LIMIT_MAPPING[limitfield];
-    const userData = await prisma.user.findUnique({
+    const userData = await myPrisma.user.findUnique({
       where: { id: userId },
       select: { [limitfield]: true },
     });
@@ -36,7 +36,7 @@ export async function incrementLimit(userId: string, field: LimitField) {
   try {
     if (!APP_SETTINGS.isProd) return;
 
-    await prisma.user.update({
+    await myPrisma.user.update({
       where: { id: userId },
       data: { [field]: { increment: 1 } },
     });

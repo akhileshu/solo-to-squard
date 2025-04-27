@@ -1,0 +1,70 @@
+"use client";
+
+import { useState, useActionState } from "react";
+import { initialState } from "@/lib/server-actions/handleAction";
+import AppForm from "@/lib/forms-inputs/form";
+import { Input } from "@/lib/forms-inputs/Input";
+import { FieldError } from "@/lib/forms-inputs/FieldError";
+import SubmitButton from "@/lib/forms-inputs/SubmitButton";
+import { create{{pascalCase name}}, update{{pascalCase name}} } from "../actions/{{camelCase name}}Actions";
+import { useHandleFormState } from "@/lib/forms-inputs/useHandleFormState";
+import { ButtonState } from "@/lib/forms-inputs/button";
+
+interface Props {
+  {{camelCase name}}?: any;
+}
+
+export default function CreateOrEdit{{pascalCase name}}Form({ {{camelCase name}} }: Props) {
+  const isEdit = !!{{camelCase name}};
+  const [title, setTitle] = useState({{camelCase name}}?.title ?? "");
+  const [content, setContent] = useState({{camelCase name}}?.content ?? "");
+
+  const actionFn = isEdit ? update{{pascalCase name}} : create{{pascalCase name}};
+  const [state, formAction, isPending] = useActionState(actionFn, initialState);
+
+  const { fieldErrors } = state ?? {};
+
+  useHandleFormState({
+    state,
+    revalidatePath: "/dashboard",
+    navigateTo: "/dashboard",
+  });
+
+  const getButtonState = (): ButtonState => ({
+    disabled: isPending || !title || !content,
+    tooltip: !title ? "Title required" : !content ? "Content required" : "",
+  });
+
+  return (
+    <AppForm submitVariant="custom" action={formAction} className="space-y-4">
+      <input type="hidden" name="id" value={ {{camelCase name}}?.id ?? ""} />
+      <Input
+        required
+        type="text"
+        name="title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Enter title"
+      />
+      <FieldError errors={fieldErrors?.title} />
+
+      <Input
+        required
+        type="text"
+        name="content"
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder="Enter content"
+      />
+      <FieldError errors={fieldErrors?.content} />
+
+      <SubmitButton
+        {...getButtonState()}
+        text={isEdit ? "Update" : "Save"}
+        pendingText={isEdit ? "Updating..." : "Saving..."
+        }
+        isPending={isPending}
+      />
+    </AppForm>
+  );
+}

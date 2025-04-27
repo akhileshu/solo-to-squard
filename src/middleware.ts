@@ -42,7 +42,13 @@ export async function middleware(request: NextRequest) {
   // todo fix bug : token.isProfileSetupDone , currently this added field is unavailable in token , so it does not redirect
   // alternate solution :  Store isProfileSetupDone in a custom cookie at login.
   // Then read it directly in middleware using request.cookies.get("your-cookie-name").
-  if (token.isProfileSetupDone === false && pathname !== "/profile/setup") {
+
+  // seems this bug is inconsistent , now i am able to read latest token and redirect
+  if (
+    token &&
+    token.isProfileSetupDone === false &&
+    pathname !== "/profile/setup"
+  ) {
     const url = request.nextUrl.clone();
     url.pathname = "/profile/setup";
     return NextResponse.redirect(url);

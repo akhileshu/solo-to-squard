@@ -2,11 +2,19 @@
 "use server";
 
 import { getServerUser } from "@/lib/auth/lib";
-import { PrismaClient, User, Domain } from "@prisma/client";
+import {
+  handleMutateAction,
+  mutateError,
+  mutateErrorNotLoggedIn,
+  MutateResponse,
+  mutateSuccess,
+  parseFormData,
+} from "@/lib/server-actions/handleAction";
+import { User, Domain } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod"; // Using Zod for validation
-
-const prisma = new PrismaClient();
+import { getMessage } from "../../lib/message/lib/get-message";
+import { myPrisma } from "@/lib/db/prisma";
 
 // Define a schema for validation
 const ProfileSchema = z.object({
@@ -52,61 +60,34 @@ export type ProfileFormState = {
 };
 
 export async function updateUserProfileAction(
-  prevState: ProfileFormState,
+  _: unknown,
   formData: FormData
-): Promise<ProfileFormState> {
-  const user = await getServerUser()
-  if (!user?.id) {
-    return { success: false, message: "Not authenticated" };
-  }
+): Promise<MutateResponse<undefined, typeof ProfileSchema>> {
+  return handleMutateAction(async () => {
+    const user = await getServerUser();
+    if (!user) return mutateErrorNotLoggedIn;
 
-  const rawData = {
-    domain: formData.get("domain") || undefined, // Handle empty select value
-    skills: formData.get("skills") as string,
-    learning: formData.get("learning") as string,
-    goals: formData.get("goals") as string,
-    availability: formData.get("availability") || undefined, // Handle empty number input
-  };
+    const { data, fieldErrors } = parseFormData(formData, ProfileSchema);
+    if (fieldErrors)
+      return mutateError(getMessage("post", "UPDATE_ERROR"), fieldErrors);
 
-  const validatedFields = ProfileSchema.safeParse(rawData);
+    // Prepare data for Prisma update, ensuring optional fields are handled
+    const dataToUpdate: Partial<
+      Pick<User, "domain" | "skills" | "learning" | "goals" | "availability">
+    > = {};
+    if (data.domain) dataToUpdate.domain = data.domain;
+    if (data.skills) dataToUpdate.skills = data.skills;
+    if (data.learning) dataToUpdate.learning = data.learning;
+    if (data.goals) dataToUpdate.goals = data.goals;
+    // Check if availability is provided and is a valid number after coercion
+    if (data.availability !== undefined && !isNaN(data.availability)) {
+      dataToUpdate.availability = data.availability;
+    } else {
+      // Explicitly set to null if provided input was invalid or empty after coercion
+      dataToUpdate.availability = null;
+    }
 
-  if (!validatedFields.success) {
-    console.error(
-      "Validation Errors:",
-      validatedFields.error.flatten().fieldErrors
-    );
-    return {
-      success: false,
-      message: "Validation failed. Please check your input.",
-      errors: validatedFields.error.issues,
-    };
-  }
-
-  // Prepare data for Prisma update, ensuring optional fields are handled
-  const dataToUpdate: Partial<
-    Pick<User, "domain" | "skills" | "learning" | "goals" | "availability">
-  > = {};
-  if (validatedFields.data.domain)
-    dataToUpdate.domain = validatedFields.data.domain;
-  if (validatedFields.data.skills)
-    dataToUpdate.skills = validatedFields.data.skills;
-  if (validatedFields.data.learning)
-    dataToUpdate.learning = validatedFields.data.learning;
-  if (validatedFields.data.goals)
-    dataToUpdate.goals = validatedFields.data.goals;
-  // Check if availability is provided and is a valid number after coercion
-  if (
-    validatedFields.data.availability !== undefined &&
-    !isNaN(validatedFields.data.availability)
-  ) {
-    dataToUpdate.availability = validatedFields.data.availability;
-  } else {
-    // Explicitly set to null if provided input was invalid or empty after coercion
-    dataToUpdate.availability = null;
-  }
-
-  try {
-    await prisma.user.update({
+    await myPrisma.user.update({
       where: { id: user.id },
       data: dataToUpdate,
     });
@@ -114,12 +95,6 @@ export async function updateUserProfileAction(
     revalidatePath("/profile/edit"); // Revalidate this page to show updated data
     revalidatePath("/dashboard"); // Revalidate dashboard if it shows profile info
 
-    return { success: true, message: "Profile updated successfully!" };
-  } catch (error) {
-    console.error("Failed to update profile:", error);
-    return {
-      success: false,
-      message: "Database error: Failed to update profile.",
-    };
-  }
+    return mutateSuccess(getMessage("post", "UPDATE_SUCCESS"));
+  });
 }

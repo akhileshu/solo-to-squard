@@ -3,16 +3,16 @@
 import { ArrowRight } from "lucide-react";
 import { useActionState, useState } from "react";
 
-import { ButtonState } from "@/components/app/button";
-import { FieldError } from "@/components/app/FieldError";
-import { Input } from "@/components/app/Input";
-import SubmitButton from "@/components/app/SubmitButton";
+import { ButtonState } from "@/lib/forms-inputs/button";
+import { FieldError } from "@/lib/forms-inputs/FieldError";
+import { Input } from "@/lib/forms-inputs/Input";
+import SubmitButton from "@/lib/forms-inputs/SubmitButton";
 import { createPost, updatePost } from "@/features/post/actions/postActions";
 import MdEditor from "@/features/post/components/md-editor";
-import { useHandleFormState } from "@/lib/forms/useHandleFormState";
+import { useHandleFormState } from "@/lib/forms-inputs/useHandleFormState";
 import { Post } from "@prisma/client";
 import { initialState } from "@/lib/server-actions/handleAction";
-import AppForm from "@/components/app/form";
+import AppForm from "@/lib/forms-inputs/form";
 
 interface CreateOrEditProps {
   post?: Post;

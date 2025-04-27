@@ -1,5 +1,5 @@
 "use client";
-import { Input } from "@/components/app/Input";
+import { Input } from "@/lib/forms-inputs/Input";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

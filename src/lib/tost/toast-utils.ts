@@ -1,8 +1,10 @@
 "use client";
-import { commonMessages } from "@/features/message/common";
-import { AppMessage, ToastMessageType } from "@/features/message/lib/define-messages";
+import { commonMessages } from "@/lib/message/common";
+import {
+  AppMessage,
+  ToastMessageType,
+} from "@/lib/message/lib/define-messages";
 import { toast } from "sonner";
-
 
 const isToastMessageType = (type: string): type is ToastMessageType => {
   const allowedTypes: ToastMessageType[] = [

@@ -43,7 +43,8 @@ export default function AppForm({
   return (
     <form
       onSubmit={(e) => {
-        if (confirmation.enabled && !confirm(confirmation.message)) e.preventDefault();
+        if (confirmation.enabled && !confirm(confirmation.message))
+          e.preventDefault();
         else onSubmit?.(e);
       }}
       action={action}
