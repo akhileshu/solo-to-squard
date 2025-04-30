@@ -248,6 +248,4 @@ export const isPostBookmarked = async (
   });
 };
 
-export async function revalidatePathAction(path: string) {
-  revalidatePath(path);
-}
+

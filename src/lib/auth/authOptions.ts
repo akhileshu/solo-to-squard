@@ -23,7 +23,12 @@ export const authOptions: AuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger , session }) {
+      if (trigger === "update" && session.isProfileSetupDone !== undefined) {
+        token.isProfileSetupDone = session.isProfileSetupDone;
+        return token;
+      }
+
       if (user) token.id = user.id;
 
       const dbUser = await myPrisma.user.findUnique({

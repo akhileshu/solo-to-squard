@@ -1,3 +1,5 @@
+"use server";
+
 import {   FetchResponse,
   MutateResponse,
   fetchError,
@@ -23,14 +25,14 @@ import {
 
 export async function get{{pascalCase name}}s(): Promise<FetchResponse<unknown>> {
   return handleFetchAction(async () => {
-    const {{camelCase name}}s = await myPrisma.{{camelCase name}}.findMany();
+    const {{camelCase name}}s = await myPrisma.{{camelCase schemaName}}.findMany();
     return fetchSuccess({{camelCase name}}s);
   });
 }
 
 export async function get{{pascalCase name}}ById(id: string): Promise<FetchResponse<unknown>> {
   return handleFetchAction(async () => {
-    const {{camelCase name}} = await myPrisma.{{camelCase name}}.findUnique({
+    const {{camelCase name}} = await myPrisma.{{camelCase schemaName}}.findUnique({
       where: { id },
     });
     return fetchSuccess({{camelCase name}});
@@ -45,7 +47,7 @@ export async function create{{pascalCase name}}(_: unknown, formData: FormData):
     const { data, fieldErrors } = parseFormData(formData, {{camelCase name}}CreateSchema);
     if (fieldErrors) return mutateError(getMessage("{{camelCase name}}", "CREATE_ERROR"), fieldErrors);
 
-    await myPrisma.{{camelCase name}}.create({ data: { ...data, userId: user.id } });
+    await myPrisma.{{camelCase schemaName}}.create({ data: { ...data, userId: user.id } });
     return mutateSuccess(getMessage("{{camelCase name}}", "CREATE_SUCCESS"));
   });
 }
@@ -58,7 +60,7 @@ export async function update{{pascalCase name}}(_: unknown, formData: FormData):
     const { data, fieldErrors } = parseFormData(formData, {{camelCase name}}UpdateSchema);
     if (fieldErrors) return mutateError(getMessage("{{camelCase name}}", "UPDATE_ERROR"), fieldErrors);
 
-    await myPrisma.{{camelCase name}}.update({ where: { id: data.id, userId: user.id }, data });
+    await myPrisma.{{camelCase schemaName}}.update({ where: { id: data.id, userId: user.id }, data });
     return mutateSuccess(getMessage("{{camelCase name}}", "UPDATE_SUCCESS"));
   });
 }
@@ -71,7 +73,7 @@ export async function delete{{pascalCase name}}(_: unknown, formData: FormData):
     const { data, fieldErrors } = parseFormData(formData, {{camelCase name}}DeleteSchema);
     if (fieldErrors) return mutateError(getMessage("{{camelCase name}}", "DELETE_ERROR"), fieldErrors);
 
-    await myPrisma.{{camelCase name}}.delete({ where: { id: data.id, userId: user.id } });
+    await myPrisma.{{camelCase schemaName}}.delete({ where: { id: data.id, userId: user.id } });
     return mutateSuccess(getMessage("{{camelCase name}}", "DELETE_SUCCESS"));
   });
 }

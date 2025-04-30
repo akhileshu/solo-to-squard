@@ -6,20 +6,20 @@ import AppForm from "@/lib/forms-inputs/form";
 import { Input } from "@/lib/forms-inputs/Input";
 import { FieldError } from "@/lib/forms-inputs/FieldError";
 import SubmitButton from "@/lib/forms-inputs/SubmitButton";
-import { createCart, updateCart } from "../actions/cartActions";
+import { createProfile, updateProfile } from "../actions/profileActions";
 import { useHandleFormState } from "@/lib/forms-inputs/useHandleFormState";
 import { ButtonState } from "@/lib/forms-inputs/button";
 
 interface Props {
-  cart?: any;
+  profile?: any;
 }
 
-export default function CreateOrEditCartForm({ cart }: Props) {
-  const isEdit = !!cart;
-  const [title, setTitle] = useState(cart?.title ?? "");
-  const [content, setContent] = useState(cart?.content ?? "");
+export default function CreateOrEditProfileForm({ profile }: Props) {
+  const isEdit = !!profile;
+  const [title, setTitle] = useState(profile?.title ?? "");
+  const [content, setContent] = useState(profile?.content ?? "");
 
-  const actionFn = isEdit ? updateCart : createCart;
+  const actionFn = isEdit ? updateProfile : createProfile;
   const [state, formAction, isPending] = useActionState(actionFn, initialState);
 
   const { fieldErrors } = state ?? {};
@@ -37,7 +37,7 @@ export default function CreateOrEditCartForm({ cart }: Props) {
 
   return (
     <AppForm submitVariant="custom" action={formAction} className="space-y-4">
-      <input type="hidden" name="id" value={ cart?.id ?? ""} />
+      <input type="hidden" name="id" value={ profile?.id ?? ""} />
       <Input
         required
         type="text"

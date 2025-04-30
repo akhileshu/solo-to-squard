@@ -1,23 +1,40 @@
 import { cn } from "@/lib/utils";
 import { InputHTMLAttributes, forwardRef } from "react";
+import { FieldError } from "./FieldError";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   fullWidth?: boolean;
+  label?: string;
+  fieldError?: string[]; 
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, fullWidth = false, ...props }, ref) => {
+  ({ className, fullWidth = false, label, id, fieldError, ...props }, ref) => {
+    const inputId = id || props.name || "input-id";
+
     return (
-      <input
-        ref={ref}
-        className={cn(
-          "rounded-sm py-1 px-2 border border-blue-400 outline-none transition-all",
-          "focus:border-2 focus:border-blue-400",
-          fullWidth ? "w-full" : "w-sm",
-          className
+      <div className={cn(fullWidth && "w-full")}>
+        {label && (
+          <label
+            htmlFor={inputId}
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            {label}
+          </label>
         )}
-        {...props}
-      />
+        <input
+          ref={ref}
+          id={inputId}
+          className={cn(
+            "rounded-sm py-1 px-2 border border-blue-400 outline-none transition-all",
+            "focus:border-2 focus:border-blue-400",
+            fullWidth ? "w-full" : "w-sm",
+            className
+          )}
+          {...props}
+        />
+        <FieldError errors={fieldError} />
+      </div>
     );
   }
 );

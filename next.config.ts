@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import createMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
   async headers() {
@@ -18,7 +17,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  pageExtensions: ["mdx", "ts", "js", "tsx"],
+  // pageExtensions: ["mdx", "ts", "js", "tsx"],
   /* config options here */
   images: {
     remotePatterns: [
@@ -30,6 +29,5 @@ const nextConfig: NextConfig = {
   },
 };
 
-const withMDX = createMDX({});
 
-export default withMDX(nextConfig);
+export default nextConfig;

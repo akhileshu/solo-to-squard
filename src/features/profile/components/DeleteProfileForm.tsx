@@ -3,11 +3,11 @@
 import { useActionState } from "react";
 import { initialState } from "@/lib/server-actions/handleAction";
 import AppForm from "@/lib/forms-inputs/form";
-import { deleteCart } from "../actions/cartActions";
+import { deleteProfile } from "../actions/profileActions";
 import { useHandleFormState } from "@/lib/forms-inputs/useHandleFormState";
 
-export default function DeleteCartForm({ id }: { id: number }) {
-  const [state, formAction, isPending] = useActionState(deleteCart, initialState);
+export default function DeleteProfileForm({ id }: { id: number }) {
+  const [state, formAction, isPending] = useActionState(deleteProfile, initialState);
 
   useHandleFormState({
     state,

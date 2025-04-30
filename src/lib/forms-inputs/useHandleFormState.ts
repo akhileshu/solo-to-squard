@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { revalidatePathAction } from "@/features/post/actions/postActions";
 import { MutateResponse } from "@/lib/server-actions/handleAction";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { handleToastMessage } from "@/lib/tost/toast-utils";
+import { revalidatePathAction } from "../caching/revalidate";
 
 /**
  * Custom hook to handle form state updates, side effects like :

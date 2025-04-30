@@ -1,89 +1,12 @@
-import { PrismaClient, Domain } from "@prisma/client";
+import { allGoals, allSkills, domains } from "@/lib/data/profile";
 import { faker } from "@faker-js/faker";
+import { PrismaClient } from "@prisma/client";
 import { writeFileSync } from "fs";
 
 const prisma = new PrismaClient();
 
 const NUM_USERS = 1000; // Number of users to generate
 
-const domains: Domain[] = [
-  Domain.BACKEND,
-  Domain.FRONTEND,
-  Domain.DESIGNING,
-  Domain.DEVOPS,
-  Domain.DATA_SCIENCE,
-  Domain.MOBILE,
-  Domain.QA,
-  Domain.OTHER,
-];
-
-const allSkills = [
-  "React",
-  "Node.js",
-  "TypeScript",
-  "JavaScript",
-  "Python",
-  "Go",
-  "Java",
-  "Ruby",
-  "PHP",
-  "C#",
-  "Swift",
-  "Kotlin",
-  "SQL",
-  "NoSQL",
-  "MongoDB",
-  "PostgreSQL",
-  "Docker",
-  "Kubernetes",
-  "AWS",
-  "Azure",
-  "GCP",
-  "Terraform",
-  "Figma",
-  "Sketch",
-  "Adobe XD",
-  "UI Design",
-  "UX Research",
-  "Product Management",
-  "Agile",
-  "Scrum",
-  "Data Analysis",
-  "Machine Learning",
-  "AI",
-  "iOS Development",
-  "Android Development",
-  "Vue.js",
-  "Angular",
-  "Svelte",
-  "Next.js",
-  "NestJS",
-  "Django",
-  "Flask",
-  "Express.js",
-  "GraphQL",
-  "REST API Design",
-  "CI/CD",
-  "Automated Testing",
-  "Manual Testing",
-];
-
-const allGoals = [
-  "Build SaaS",
-  "Find Co-Founder",
-  "Learn New Tech",
-  "Build Portfolio Project",
-  "Contribute to Open Source",
-  "Network with Developers",
-  "Find Mentorship",
-  "Mentor Others",
-  "Explore AI Tools",
-  "Work on Side Projects",
-  "Get Beta Testers",
-  "Improve UX Skills",
-  "Optimize Backend Performance",
-  "Develop Mobile App",
-];
 
 function getRandomSubset<T>(arr: T[], maxSize: number): T[] {
   const shuffled = arr.slice().sort(() => 0.5 - Math.random());

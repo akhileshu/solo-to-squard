@@ -36,8 +36,6 @@ export async function middleware(request: NextRequest) {
   });
   const pathname = request.nextUrl.pathname;
 
-  if (!token || pathname === "/profile/setup") return NextResponse.next();
-  console.log({ token });
 
   // todo fix bug : token.isProfileSetupDone , currently this added field is unavailable in token , so it does not redirect
   // alternate solution :  Store isProfileSetupDone in a custom cookie at login.
@@ -52,6 +50,14 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/profile/setup";
     return NextResponse.redirect(url);
+  }
+
+  if (
+    pathname === "/profile/setup" &&
+    token &&
+    token.isProfileSetupDone
+  ) {
+    // return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return NextResponse.next();
