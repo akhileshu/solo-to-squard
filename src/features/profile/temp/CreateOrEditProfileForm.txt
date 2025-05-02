@@ -6,7 +6,7 @@ import AppForm from "@/lib/forms-inputs/form";
 import { Input } from "@/lib/forms-inputs/Input";
 import { FieldError } from "@/lib/forms-inputs/FieldError";
 import SubmitButton from "@/lib/forms-inputs/SubmitButton";
-import { createProfile, updateProfile } from "../actions/profileActions";
+import { createProfile, updateProfile } from "../../actions/profileActions";
 import { useHandleFormState } from "@/lib/forms-inputs/useHandleFormState";
 import { ButtonState } from "@/lib/forms-inputs/button";
 

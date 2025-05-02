@@ -1,15 +1,16 @@
 import { cn } from "@/lib/utils";
 import Link, { LinkProps } from "next/link";
-import { ReactNode } from "react";
+import { AnchorHTMLAttributes, ReactNode } from "react";
 
-type LinkButtonProps = LinkProps & {
-  children: ReactNode;
-  className?: string;
-  leftIcon?: ReactNode;
-  rightIcon?: ReactNode;
-  disableUnderline?: boolean;
-  disableTransition?: boolean;
-};
+type LinkButtonProps = LinkProps &
+  AnchorHTMLAttributes<HTMLAnchorElement> & {
+    children: ReactNode;
+    className?: string;
+    leftIcon?: ReactNode;
+    rightIcon?: ReactNode;
+    disableUnderline?: boolean;
+    disableTransition?: boolean;
+  };
 
 export function AppLink({
   href,

@@ -12,7 +12,7 @@ export default function Auth() {
     <div>
       {session ? (
         <div className="flex gap-1 items-center">
-          <AppLink disableTransition disableUnderline href={"/dashboard"}>
+          <AppLink title="my profile"  disableTransition disableUnderline href={"/profile"}>
             <Image
               alt="user-img"
               src={session.user.image}

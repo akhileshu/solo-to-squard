@@ -6,6 +6,7 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   fullWidth?: boolean;
   label?: string;
   fieldError?: string[]; 
+
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(

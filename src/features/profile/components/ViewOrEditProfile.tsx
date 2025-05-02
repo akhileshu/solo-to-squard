@@ -2,40 +2,24 @@
 
 import { AppCard } from "@/components/app/card";
 import { renderStatusMessage } from "@/components/app/status-message/renderStatusMessage";
-import { getLoggedInUserProfile } from "@/features/profile/actions/profileActions";
+import {
+  getLoggedInUserProfile,
+  updateProfile,
+} from "@/features/profile/actions/profileActions";
+import { allGoals, allSkills, domains } from "@/lib/data/profile";
+import { Button } from "@/lib/forms-inputs/button";
+import AppForm from "@/lib/forms-inputs/form";
+import { Input } from "@/lib/forms-inputs/Input";
+import { MultiSelect } from "@/lib/forms-inputs/MultiSelect";
+import { Select } from "@/lib/forms-inputs/Select";
+import { useHandleFormState } from "@/lib/forms-inputs/useHandleFormState";
+import { useEditToggle } from "@/lib/forms-inputs/utils";
+import { initialState } from "@/lib/server-actions/handleAction";
 import { cn } from "@/lib/utils";
-import { Domain } from "@prisma/client";
-import { useState } from "react";
+import { User } from "@prisma/client";
+import { useActionState, useEffect } from "react";
 
-// type ViewOrEditProfilesProps = {
-//   className?: string;
-//   profilesResult: Awaited<ReturnType<typeof getProfiles>>;
-// };
 
-// // For List
-// export function ViewOrEditProfiles({
-//   profilesResult,
-//   className,
-// }: ViewOrEditProfilesProps) {
-//   const cardTitle = "Profile List";
-
-//   const statusMessage = renderStatusMessage(profilesResult, cardTitle);
-//   if (statusMessage || !profilesResult.ok) return statusMessage;
-
-//   const { data } = profilesResult;
-
-//   return (
-//     <AppCard title={cardTitle} className={cn("", className)}>
-//       <div className="divide-y">
-//         {data.map((item) => (
-//           <div key={item.id} className="">
-//             {/* Render your item here */}
-//           </div>
-//         ))}
-//       </div>
-//     </AppCard>
-//   );
-// }
 
 type ViewOrEditProfileProps = {
   className?: string;
@@ -47,60 +31,145 @@ export function ViewOrEditProfile({
   profileResult,
   className,
 }: ViewOrEditProfileProps) {
-  const [editing, setEditing] = useState(false);
   const cardTitle = "Profile";
+  const { editing, startEditing, cancelEditing } = useEditToggle();
 
   const statusMessage = renderStatusMessage(profileResult, cardTitle);
   if (statusMessage || !profileResult.ok) return statusMessage;
 
   const { data } = profileResult;
 
-  
-
   return (
-    <AppCard title={cardTitle} className={cn("", className)}>
-      {editing ? <></> : <ProfileVeiw {...data} />}
+    <AppCard title={cardTitle} className={cn("space-y-2", className)}>
+      {!editing ? (
+        <Button disabled={editing} onClick={startEditing}>
+          Edit Profile
+        </Button>
+      ) : null}
+
+      {editing ? (
+        <EditProfileForm onCancel={cancelEditing} profile={data} />
+      ) : (
+        <ViewProfile profile={data} />
+      )}
     </AppCard>
   );
 }
 
-function ProfileVeiw(data: {
-  name: string | null;
-  id: string;
-  email: string | null;
-  emailVerified: Date | null;
-  image: string | null;
-  isProfileSetupDone: boolean;
-  domain: Domain | null;
-  skills: string[];
-  learning: string[];
-  goals: string[];
-  availability: number | null;
+function EditProfileForm({
+  profile,
+  onCancel,
+}: {
+  profile: User;
+  onCancel: () => void;
 }) {
+  const [state, formAction, isPending] = useActionState(
+    updateProfile,
+    initialState
+  );
+  const { fieldErrors } = state ?? {};
+
+  useHandleFormState({
+    state,
+    revalidatePath: "/profile/view",
+  });
+
+  useEffect(() => {
+    if (state.ok) {
+      onCancel();
+    }
+  }, [onCancel, state.ok]);
+
+  return (
+    <AppForm
+      className="space-y-4 max-w-md"
+      action={formAction}
+      variant="default"
+      submitVariant="default"
+      submitProps={{
+        isPending,
+        buttonState: { disabled: isPending },
+        label: "Update Profile",
+      }}
+    >
+      <Select
+        label="Domain"
+        name="domain"
+        options={domains.map((d) => ({ label: d, value: d }))}
+        fieldError={fieldErrors?.domain}
+        value={profile.domain as string}
+      />
+
+      <MultiSelect
+        label="Skills"
+        name="skills"
+        options={allSkills.map((skill) => ({ label: skill, value: skill }))}
+        fieldError={fieldErrors?.skills}
+        value={profile.skills}
+      />
+
+      <MultiSelect
+        label="Learning Goals"
+        name="learning"
+        options={allSkills.map((skill) => ({ label: skill, value: skill }))}
+        fieldError={fieldErrors?.learning}
+        value={profile.learning}
+      />
+
+      <MultiSelect
+        label="Your Goals"
+        name="goals"
+        options={allGoals.map((goal) => ({ label: goal, value: goal }))}
+        fieldError={fieldErrors?.goals}
+        value={profile.goals}
+      />
+
+      <Input
+        label="Availability (hours/week)"
+        name="availability"
+        type="number"
+        min={1}
+        max={168}
+        fullWidth
+        fieldError={fieldErrors?.availability}
+        defaultValue={profile.availability as number}
+      />
+      <Button
+        className="mr-2 text-red-600"
+        disabled={isPending}
+        onClick={onCancel}
+      >
+        Cancel
+      </Button>
+    </AppForm>
+  );
+}
+
+function ViewProfile({ profile }: { profile: User }) {
   return (
     <div className="space-y-2 text-sm text-gray-800">
       <p>
         <span className="font-semibold">Name:</span>{" "}
-        {data.name ?? "Not provided"}
+        {profile.name ?? "Not provided"}
       </p>
       <p>
         <span className="font-semibold">Email:</span>{" "}
-        {data.email ?? "Not provided"}
+        {profile.email ?? "Not provided"}
       </p>
       <p>
         <span className="font-semibold">Domain:</span>{" "}
-        {data.domain ?? "Not specified"}
+        {profile.domain ?? "Not specified"}
       </p>
       <p>
         <span className="font-semibold">Availability:</span>{" "}
-        {data.availability ?? "N/A"} hrs/week
+        {profile.availability ?? "N/A"} hrs/week
       </p>
 
       <div>
         <p className="font-semibold">Skills:</p>
         <ul className="list-disc list-inside text-gray-700">
-          {data.skills.length ? (
-            data.skills.map((s, i) => <li key={i}>{s}</li>)
+          {profile.skills.length ? (
+            profile.skills.map((s, i) => <li key={i}>{s}</li>)
           ) : (
             <li>No skills added</li>
           )}
@@ -110,8 +179,8 @@ function ProfileVeiw(data: {
       <div>
         <p className="font-semibold">Learning:</p>
         <ul className="list-disc list-inside text-gray-700">
-          {data.learning.length ? (
-            data.learning.map((l, i) => <li key={i}>{l}</li>)
+          {profile.learning.length ? (
+            profile.learning.map((l, i) => <li key={i}>{l}</li>)
           ) : (
             <li>No items</li>
           )}
@@ -121,8 +190,8 @@ function ProfileVeiw(data: {
       <div>
         <p className="font-semibold">Goals:</p>
         <ul className="list-disc list-inside text-gray-700">
-          {data.goals.length ? (
-            data.goals.map((g, i) => <li key={i}>{g}</li>)
+          {profile.goals.length ? (
+            profile.goals.map((g, i) => <li key={i}>{g}</li>)
           ) : (
             <li>No goals set</li>
           )}

@@ -1,0 +1,26 @@
+export async function createProfile(_: unknown, formData: FormData): Promise<MutateResponse<undefined, typeof profileCreateSchema>> {
+  return handleMutateAction(async () => {
+    const user = await getServerUser();
+    if (!user) return mutateErrorNotLoggedIn;
+
+    const { data, fieldErrors } = parseFormData(formData, profileCreateSchema);
+    if (fieldErrors) return mutateError(getMessage("profile", "CREATE_ERROR"), fieldErrors);
+
+    await myPrisma.user.create({ data: { ...data, userId: user.id } });
+    return mutateSuccess(getMessage("profile", "CREATE_SUCCESS"));
+  });
+}
+
+
+export async function deleteProfile(_: unknown, formData: FormData): Promise<MutateResponse<undefined, typeof profileDeleteSchema>> {
+  return handleMutateAction(async () => {
+    const user = await getServerUser();
+    if (!user) return mutateErrorNotLoggedIn;
+
+    const { data, fieldErrors } = parseFormData(formData, profileDeleteSchema);
+    if (fieldErrors) return mutateError(getMessage("profile", "DELETE_ERROR"), fieldErrors);
+
+    await myPrisma.user.delete({ where: { id: data.id, userId: user.id } });
+    return mutateSuccess(getMessage("profile", "DELETE_SUCCESS"));
+  });
+}

@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { initialState } from "@/lib/server-actions/handleAction";
 import AppForm from "@/lib/forms-inputs/form";
-import { deleteProfile } from "../actions/profileActions";
+import { deleteProfile } from "../../actions/profileActions";
 import { useHandleFormState } from "@/lib/forms-inputs/useHandleFormState";
 
 export default function DeleteProfileForm({ id }: { id: number }) {

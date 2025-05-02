@@ -1,0 +1,29 @@
+type ViewOrEditProfilesProps = {
+  className?: string;
+  profilesResult: Awaited<ReturnType<typeof getProfiles>>;
+};
+
+// For List
+export function ViewOrEditProfiles({
+  profilesResult,
+  className,
+}: ViewOrEditProfilesProps) {
+  const cardTitle = "Profile List";
+
+  const statusMessage = renderStatusMessage(profilesResult, cardTitle);
+  if (statusMessage || !profilesResult.ok) return statusMessage;
+
+  const { data } = profilesResult;
+
+  return (
+    <AppCard title={cardTitle} className={cn("", className)}>
+      <div className="divide-y">
+        {data.map((item) => (
+          <div key={item.id} className="">
+            {/* Render your item here */}
+          </div>
+        ))}
+      </div>
+    </AppCard>
+  );
+}

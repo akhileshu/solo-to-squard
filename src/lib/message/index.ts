@@ -3,6 +3,7 @@ import { profileMessages } from "./profile";
 import { commonMessages } from "./common";
 import { postMessages } from "./post";
 import { bookmarkMessages } from "./bookmark";
+import { connectionMessages } from "./connection";
 
 export const appMessages = {
   auth: authMessages,
@@ -10,6 +11,7 @@ export const appMessages = {
   common: commonMessages,
   post: postMessages,
   bookmark: bookmarkMessages,
+  connection:connectionMessages
 };
 
 

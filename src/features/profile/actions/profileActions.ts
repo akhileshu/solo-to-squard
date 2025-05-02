@@ -52,18 +52,6 @@ export async function getLoggedInUserProfile(
   });
 }
 
-// export async function createProfile(_: unknown, formData: FormData): Promise<MutateResponse<undefined, typeof profileCreateSchema>> {
-//   return handleMutateAction(async () => {
-//     const user = await getServerUser();
-//     if (!user) return mutateErrorNotLoggedIn;
-
-//     const { data, fieldErrors } = parseFormData(formData, profileCreateSchema);
-//     if (fieldErrors) return mutateError(getMessage("profile", "CREATE_ERROR"), fieldErrors);
-
-//     await myPrisma.user.create({ data: { ...data, userId: user.id } });
-//     return mutateSuccess(getMessage("profile", "CREATE_SUCCESS"));
-//   });
-// }
 
 export async function setupProfile(
   _: unknown,
@@ -74,11 +62,11 @@ export async function setupProfile(
     if (!user) return mutateErrorNotLoggedIn;
 
     //todo : ignore these kinds of ts error for parseformdata function
+    // @ts-expect-error for parseFormData()args
     const { data, fieldErrors } = parseFormData(formData, profileSetupSchema);
     if (fieldErrors)
       return mutateError(getMessage("profile", "SETUP_ERROR"), fieldErrors);
 
-    // trigger jwt session update
     await myPrisma.user.update({
       where: {
         id: user.id,
@@ -102,28 +90,23 @@ export async function updateProfile(
   return handleMutateAction(async () => {
     const user = await getServerUser();
     if (!user) return mutateErrorNotLoggedIn;
-
+    // @ts-expect-error for parseFormData()args
     const { data, fieldErrors } = parseFormData(formData, profileUpdateSchema);
     if (fieldErrors)
       return mutateError(getMessage("profile", "UPDATE_ERROR"), fieldErrors);
 
     await myPrisma.user.update({
-      where: { id: data.id, userId: user.id },
-      data,
+      where: {
+        id: user.id,
+        isProfileSetupDone: true,
+      },
+      data: {
+        ...data,
+        domain: data.domain as Domain,
+        isProfileSetupDone: true,
+      },
     });
     return mutateSuccess(getMessage("profile", "UPDATE_SUCCESS"));
   });
 }
 
-// export async function deleteProfile(_: unknown, formData: FormData): Promise<MutateResponse<undefined, typeof profileDeleteSchema>> {
-//   return handleMutateAction(async () => {
-//     const user = await getServerUser();
-//     if (!user) return mutateErrorNotLoggedIn;
-
-//     const { data, fieldErrors } = parseFormData(formData, profileDeleteSchema);
-//     if (fieldErrors) return mutateError(getMessage("profile", "DELETE_ERROR"), fieldErrors);
-
-//     await myPrisma.user.delete({ where: { id: data.id, userId: user.id } });
-//     return mutateSuccess(getMessage("profile", "DELETE_SUCCESS"));
-//   });
-// }

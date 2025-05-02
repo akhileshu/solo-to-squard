@@ -3,7 +3,7 @@
  * Handlebars only looks for {{ without any space.
  * { { confuses it — it treats it like normal text, not a template expression.
  *
- * todo : sometimes we want to use uiName instead of schemaName ex : editProfile insted of editUser
+ * sometimes we want to use uiName instead of schemaName ex : editProfile insted of editUser
  * → Use schemaName wherever you talk to backend/db. (user)
  * → Use uiName wherever you make components, pages, actions. (profile)
  */
@@ -56,11 +56,11 @@ module.exports = function (plop) {
             schemaName: schemaName,
           },
         },
-        // Create/Edit Form
+        // viewOrEdit component
         {
           type: "add",
-          path: `${resourceTargetBasePath}/components/CreateOrEdit{{pascalCase uiName}}Form.tsx`,
-          templateFile: "plop-templates/createOrEditForm.hbs",
+          path: `${resourceTargetBasePath}/components/viewOrEdit{{pascalCase uiName}}.tsx`,
+          templateFile: "plop-templates/viewOrEdit.hbs",
           data: {
             name: data.uiName,
             schemaName: schemaName,

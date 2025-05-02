@@ -5,6 +5,7 @@ import { FieldError } from "./FieldError";
 
 type MultiSelectProps = {
   label?: string;
+  value?: string[];
   name: string;
   options: SelectOption[];
   className?: string;
@@ -16,9 +17,9 @@ export function MultiSelect({
   name,
   options,
   className,
-  fieldError,
+  fieldError,value
 }: MultiSelectProps) {
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string[]>(value || []);
   const [open, setOpen] = useState(false);
 
   const toggleSelect = (value: string) => {

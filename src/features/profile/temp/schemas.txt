@@ -1,0 +1,7 @@
+export const profileDeleteSchema = z.object({
+  id: z.number(),
+});
+export const profileCreateSchema = z.object({
+  title: z.string().min(3, "Title too short"),
+  content: z.string().min(10, "Content too short"),
+});
