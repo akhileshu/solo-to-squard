@@ -26,9 +26,8 @@ export function SendConnectRequestButton({
 
   useHandleFormState({
     state,
-    revalidatePath: "/placeholderPath",
+    revalidatePath: "/connections/recommendations",
     // todo : revalidate potential matching list on success to exclude this matching to whome we sent request
-
   });
 
   useEffect(() => {
@@ -54,7 +53,7 @@ dynamic button label based on connection status : ex: "Request Sent - waiting ap
       submitProps={{
         isPending,
         buttonState: { disabled: isPending },
-        label: state.ok ? "Request Sent ✅" : "Connect",
+        label: "Connect",
         className:"bg-blue-500 text-white font-bold",
       }}
     >

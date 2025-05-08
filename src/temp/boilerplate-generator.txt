@@ -1,0 +1,88 @@
+```
+src/
+└── features/
+    └── video.ts                         <-- main logic hub (optionally split later)
+    └── video.actions.ts                 <-- server actions
+    └── video.api.ts                     <-- route handlers or fetchers
+    └── video.components.tsx             <-- all small components
+    └── video.hooks.ts                   <-- all hooks
+    └── video.schemas.ts                 <-- Zod schemas
+    └── video.types.ts                   <-- types
+    └── video.store.ts                   <-- store logic
+    └── video.utils.ts                   <-- utilities
+    └── video.constants.ts               <-- constants/messages
+app/
+└── video/
+    ├── page.tsx                         <-- `/video`
+    └── upload/
+        └── page.tsx                     <-- `/video/upload`
+```
+
+============================
+
+```
+src/
+└── features/
+    └── video/
+        ├── components/
+        │   ├── VideoUploadForm.tsx
+        │   ├── VideoList.tsx
+        │   └── VideoPlayer.tsx
+        ├── api/                             <-- (optional if using app router only)
+        │   ├── upload.ts
+        │   ├── process.ts
+        │   ├── get.ts
+        │   └── delete.ts
+        ├── actions/
+        │   ├── startProcessing.ts
+        │   └── notifyUser.ts
+        ├── schemas/
+        │   ├── videoSchema.ts
+        │   └── videoInputSchema.ts
+        ├── hooks/
+        │   ├── useUploadVideo.ts
+        │   └── useProcessStatus.ts
+        ├── utils/
+        │   ├── formatDuration.ts
+        │   └── getThumbnail.ts
+        ├── types.ts
+        ├── store.ts
+        ├── constants.ts
+        └── index.ts                        <-- optional barrel file
+app/
+└── video/
+    ├── page.tsx                           <-- maps to `/video`
+    └── upload/
+        └── page.tsx                       <-- maps to `/video/upload`
+```
+
+
+======================================
+
+
+// 📁 example/feature.video.json
+{
+  "name": "video",
+  "components": ["VideoUploadForm", "VideoList", "VideoPlayer"],
+  "apiRoutes": ["upload", "process", "get", "delete"],
+  "serverActions": ["startProcessing", "notifyUser"],
+  "dbModel": {
+    "name": "Video",
+    "fields": {
+      "id": "String @id @default(cuid())",
+      "title": "String",
+      "description": "String",
+      "url": "String",
+      "status": "String",
+      "createdAt": "DateTime @default(now())",
+      "updatedAt": "DateTime @updatedAt"
+    }
+  },
+  "zodSchemas": ["videoSchema", "videoInputSchema"],
+  "hooks": ["useUploadVideo", "useProcessStatus"],
+  "types": ["Video"],
+  "store": "useVideoStore",
+  "utils": ["formatDuration", "getThumbnail"],
+  "constants": ["videoStatus", "appMessages"],
+  "pages": ["video/index", "video/upload"]
+}

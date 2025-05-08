@@ -1,0 +1,16 @@
+📁 Directory Structure Suggestion
+
+project-root/
+├── plopfile.ts
+├── plop-templates/
+│   ├── component.tsx.hbs
+│   ├── api.ts.hbs
+│   ├── action.ts.hbs
+│   ├── zod.ts.hbs
+│   ├── hook.ts.hbs
+│   ├── util.ts.hbs
+│   ├── types.ts.hbs
+│   ├── store.ts.hbs
+│   ├── constants.ts.hbs
+│   ├── messages.ts.hbs
+│   └── page.tsx.hbs

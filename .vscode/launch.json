@@ -30,8 +30,14 @@
       "name": "Next.js: debug full stack",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
-      "runtimeArgs": ["--inspect"],
+      // "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
+      // "runtimeArgs": ["--inspect"],
+
+      // running custom express server
+      "program": "${workspaceFolder}/src/server.ts",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      //
       "skipFiles": ["<node_internals>/**"],
       "serverReadyAction": {
         "action": "debugWithChrome",

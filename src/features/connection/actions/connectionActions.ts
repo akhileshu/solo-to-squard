@@ -3,6 +3,7 @@
 import {
   FetchResponse,
   MutateResponse,
+  fetchError,
   fetchErrorNotLoggedIn,
   fetchSuccess,
   handleFetchAction,
@@ -10,22 +11,20 @@ import {
   mutateError,
   mutateErrorNotLoggedIn,
   mutateSuccess,
-  parseFormData
+  parseFormData,
 } from "@/lib/server-actions/handleAction";
-import { connectionStatusUpdateSchema, sendConnectionSchema } from "../schemas/connectionSchemas";
+import {
+  connectionStatusUpdateSchema,
+  fetchConnReqSchema,
+  sendConnectionSchema,
+} from "../schemas/connectionSchemas";
 
 import { getServerUser } from "@/lib/auth/lib";
 import { myPrisma } from "@/lib/db/prisma";
 import { getMessage } from "@/lib/message/lib/get-message";
 
-
-
-import {
-  Connection,
-  ConnectionStatus,
-  User,
-} from "@prisma/client";
-
+import { Connection, ConnectionStatus, User } from "@prisma/client";
+import { FetchConnReqSearchParams } from "../types";
 
 /**
  * Sends a connection request from one user to another.
@@ -84,7 +83,6 @@ export async function sendConnectionRequest(
   });
 }
 
-
 /**
  * Updates the status of an existing connection request (Accept or Decline).
  * @param connectionId The ID of the connection to update.
@@ -119,16 +117,18 @@ export async function updateConnectionStatus(
       );
 
     // Ensure the user performing the action is the receiver of the request
-    if (connection.receiverId !== loggedInUser.id) return mutateError(
+    if (connection.receiverId !== loggedInUser.id)
+      return mutateError(
         getMessage("connection", "UPDATE_STATUS_ERROR"),
         fieldErrors
       );
 
     // Ensure the connection is currently PENDING
-    if (connection.status !== ConnectionStatus.PENDING) return mutateError(
-      getMessage("connection", "UPDATE_STATUS_ERROR"),
-      fieldErrors
-    );
+    if (connection.status !== ConnectionStatus.PENDING)
+      return mutateError(
+        getMessage("connection", "UPDATE_STATUS_ERROR"),
+        fieldErrors
+      );
 
     const updatedConnection = await myPrisma.connection.update({
       where: { id: connectionId },
@@ -147,22 +147,58 @@ export async function updateConnectionStatus(
  * Gets all pending connection requests received by a user.
  * @returns A promise resolving to an array of pending Connection objects including sender info.
  */
-export async function getPendingReceivedRequests(): Promise<
+export async function getConnectionRequests(
+  searchParams: FetchConnReqSearchParams
+): Promise<
   FetchResponse<
-    (Connection & { sender: Pick<User, "id" | "name" | "image"> })[]
+    (Connection & { sender: Pick<User, "id" | "name" | "image"> } & {
+      receiver: Pick<User, "id" | "name" | "image">;
+    })[]
   >
 > {
   return handleFetchAction(async () => {
+    // read filters from url params
+    // http://localhost:3000/connections/requests?status=PENDING&direction=incoming&thanks=1
     const user = await getServerUser();
     if (!user) return fetchErrorNotLoggedIn;
+
+    const { data: parsedSearchedParams, error: searchParamsError } =
+      fetchConnReqSchema.safeParse(searchParams);
+    if (searchParamsError) {
+      return fetchError(getMessage("connection", "FETCH_ACCEPTED_ERROR"));
+    }
+
+    const { status, direction } = parsedSearchedParams;
+
+    // Determine the filtering condition based on the direction
+    const filterCondition =
+      direction === "incoming"
+        ? { receiverId: user.id }
+        : direction === "outgoing"
+        ? { senderId: user.id }
+        : {
+            // for "all", include both sent and received
+            OR: [{ receiverId: user.id }, { senderId: user.id }],
+          };
+
+    const statusCondition =
+      status === "all" ? {} : { status: status as ConnectionStatus }; // skip status filter if "all"
+
     const requests = await myPrisma.connection.findMany({
       where: {
-        receiverId: user.id,
-        status: ConnectionStatus.PENDING,
+        ...filterCondition,
+        ...statusCondition,
       },
       include: {
         sender: {
           // Include basic info about the sender
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+        receiver: {
           select: {
             id: true,
             name: true,
@@ -225,6 +261,36 @@ export async function getAcceptedConnections(): Promise<
     return fetchSuccess(uniqueUsers);
   });
 }
+
+/*
+export async function getPendingReceivedRequests(): Promise<
+  FetchResponse<
+    (Connection & { sender: Pick<User, "id" | "name" | "image"> })[]
+  >
+> {
+  return handleFetchAction(async () => {
+    const user = await getServerUser();
+    if (!user) return fetchErrorNotLoggedIn;
+    const requests = await myPrisma.connection.findMany({
+      where: {
+        receiverId: user.id,
+        status: ConnectionStatus.PENDING,
+      },
+      include: {
+        sender: {
+          // Include basic info about the sender
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+    });
+    return fetchSuccess(requests);
+  });
+}
+*/
 
 /*
 export async function getConnections(): Promise<FetchResponse<unknown>> {

@@ -5,43 +5,95 @@ import {
   fetchError,
   fetchErrorNotLoggedIn,
   fetchSuccess,
-  handleFetchAction
+  handleFetchAction,
 } from "@/lib/server-actions/handleAction";
 
 import { getServerUser } from "@/lib/auth/lib";
 import { myPrisma } from "@/lib/db/prisma";
 import { getMessage } from "@/lib/message/lib/get-message";
 
+import { ConnectionStatus, Domain, User } from "@prisma/client";
 
-import { Domain, User } from "@prisma/client";
-
-
-export async function getPotentialMatchesForLoggedInUser(
-  limit: number = 5
-): Promise<FetchResponse<User[]>> {
+export async function getPotentialMatchesForLoggedInUser(limit: number = 5): Promise<
+  FetchResponse<
+    (User & {
+      sentConnections: {
+        receiverId: string;
+        senderId: string;
+        status: ConnectionStatus;
+        id: string;
+      }[];
+      receivedConnections: {
+        senderId: string;
+        receiverId: string;
+        status: ConnectionStatus;
+        id: string;
+      }[];
+    })[]
+  >
+> {
   return handleFetchAction(async () => {
-    const userSession = await getServerUser();
-    if (!userSession) return fetchErrorNotLoggedIn;
+    const loggedInUser = await getServerUser();
+    if (!loggedInUser) return fetchErrorNotLoggedIn;
 
     const currentUser = await myPrisma.user.findUnique({
-      where: { id: userSession.id },
+      where: { id: loggedInUser.id },
     });
     if (!currentUser) return fetchError(getMessage("profile", "NOT_FOUND"));
 
     const otherUsers = await myPrisma.user.findMany({
       where: {
         id: { not: currentUser.id },
+
         // Maybe add filters like: domain is not null, availability is not null etc.
+      },
+      include: {
+        receivedConnections: {
+          where: {
+            OR: [
+              { receiverId: loggedInUser.id },
+              { senderId: loggedInUser.id },
+            ],
+          },
+          select: {
+            senderId: true,
+            receiverId: true,
+            status: true,
+            id: true,
+          },
+        },
+        sentConnections: {
+          where: {
+            OR: [
+              { receiverId: loggedInUser.id },
+              { senderId: loggedInUser.id },
+            ],
+          },
+          select: {
+            receiverId: true,
+            senderId: true,
+            status: true,
+            id: true,
+          },
+        },
       },
     });
 
     // --- Basic Matching Algorithm ---
+    /*
+    may exclude profiles which are already connected with the current user / 
+    or a connection request is already sent/received to/from the profile
+    */
     const potentialMatches = otherUsers
       .map((potentialMatch) => {
         let score = 0;
 
-        // 1. Domain Complementarity (Simple Example)
+        if (potentialMatch.name?.toLowerCase()?.includes("akhilesh")) {
+          // temporary for testing
+          score += 100;
+        }
         if (currentUser.domain && potentialMatch.domain) {
+          // 1. Domain Complementarity (Simple Example)
           if (
             (currentUser.domain === Domain.FRONTEND &&
               potentialMatch.domain === Domain.BACKEND) ||
@@ -115,8 +167,6 @@ export async function getPotentialMatchesForLoggedInUser(
     return fetchSuccess(potentialMatches);
   });
 }
-
-
 
 /*
 

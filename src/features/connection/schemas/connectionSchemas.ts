@@ -15,3 +15,15 @@ export const connectionStatusUpdateSchema = z.object({
 export const connectionDeleteSchema = z.object({
   id: z.number(),
 });
+
+export const fetchConnReqSchema = z.object({
+  // z.default(...) only applies when the value is undefined
+  status: z
+    .enum([
+      ...(Object.values(ConnectionStatus) as [string, ...string[]]),
+      "all",
+    ])
+    .default("all"),
+  // .optional(),
+  direction: z.enum(["incoming", "outgoing", "all"]).default("all"),
+});

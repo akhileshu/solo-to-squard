@@ -4,6 +4,7 @@ import Auth from "@/lib/auth/components";
 
 import { AppLink } from "@/components/app/link";
 import { HoverDropdown } from "@/components/app/hover-dropdown";
+import SendTestNotificationButton from "@/features/notification/components/SendNotificationButton";
 
 export default function Navbar() {
   return (
@@ -19,27 +20,19 @@ export default function Navbar() {
           <ul className="min-w-56 p-2 text-sm space-y-1">
             <AppLink
               title="Find new people to connect with"
-              href="/explore/connections"
+              href="/connections/recommendations"
             >
               Explore Connections
             </AppLink>
             <AppLink href="/connections">My Connections</AppLink>
-          </ul>
-        </HoverDropdown>
-        <HoverDropdown trigger="Connection Requests">
-          <ul className="min-w-56 p-2 text-sm space-y-1">
-            <AppLink href="/connections/requests/pending/sent">
-              Sent Requests
-            </AppLink>
-            <AppLink href="/connections/requests/pending/received">
-              Received Requests
-            </AppLink>
-            <AppLink href="/connections/requests/history">
-              All past requests
+            <AppLink href="/connections/requests">
+              connection requests
             </AppLink>
           </ul>
         </HoverDropdown>
+        
         <AppLink href="/notifications">Notifications</AppLink>
+        <SendTestNotificationButton/>
       </div>
 
       <Auth />

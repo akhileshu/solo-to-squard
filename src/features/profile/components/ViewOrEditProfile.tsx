@@ -19,15 +19,13 @@ import { cn } from "@/lib/utils";
 import { User } from "@prisma/client";
 import { useActionState, useEffect } from "react";
 
-
-
 type ViewOrEditProfileProps = {
   className?: string;
   profileResult: Awaited<ReturnType<typeof getLoggedInUserProfile>>;
 };
 
 // For Single Item
-export function ViewOrEditProfile({
+export function ViewOrEditMyProfile({
   profileResult,
   className,
 }: ViewOrEditProfileProps) {
@@ -50,7 +48,7 @@ export function ViewOrEditProfile({
       {editing ? (
         <EditProfileForm onCancel={cancelEditing} profile={data} />
       ) : (
-        <ViewProfile profile={data} />
+        <MyProfile profile={data} />
       )}
     </AppCard>
   );
@@ -145,7 +143,7 @@ function EditProfileForm({
   );
 }
 
-function ViewProfile({ profile }: { profile: User }) {
+function MyProfile({ profile }: { profile: User }) {
   return (
     <div className="space-y-2 text-sm text-gray-800">
       <p>

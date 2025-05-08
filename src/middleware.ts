@@ -34,6 +34,7 @@ export async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
     decode: authOptions.jwt?.decode,
   });
+  // console.log({token});
   const pathname = request.nextUrl.pathname;
 
 
