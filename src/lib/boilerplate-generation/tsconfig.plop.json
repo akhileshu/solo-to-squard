@@ -1,20 +1,18 @@
-{
-  "extends": "../../../tsconfig.json",
-  "compilerOptions": {
-    "module": "commonjs"
-  }
-}
-
-
 // {
+//   "extends": "../../../tsconfig.json",
 //   "compilerOptions": {
-//     "module": "commonjs",
-//     "moduleResolution": "node",
-//     "esModuleInterop": true,
-//     "lib": ["es2021"]
-
-//     // other options...
-//   },
-//   "include": ["**/*.ts", "**/*.tsx", "test.ts"]
+//     "module": "commonjs"
+//   }
 // }
 
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "lib": ["es2021"]
+
+    // other options...
+  },
+  "include": ["**/*.ts", "**/*.tsx", "test.ts"]
+}

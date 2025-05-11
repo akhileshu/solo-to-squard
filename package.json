@@ -46,6 +46,7 @@
     "@faker-js/faker": "^9.7.0",
     "@tailwindcss/postcss": "^4.0.15",
     "@types/express": "^5.0.1",
+    "@types/inquirer": "^9.0.8",
     "@types/node": "^20.17.24",
     "@types/react": "^19",
     "@types/react-dom": "^19",

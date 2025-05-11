@@ -1,0 +1,18 @@
+export interface {{properCase name}} {
+  id: string;
+  title: string;
+  description?: string;
+  status: 'active' | 'inactive' | 'archived';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type {{properCase name}}CreateInput = Omit<{{properCase name}}, 'id' | 'createdAt' | 'updatedAt'>;
+export type {{properCase name}}UpdateInput = Partial<{{properCase name}}CreateInput>;
+
+export interface {{properCase name}}SearchParams {
+  query?: string;
+  status?: string;
+  page?: number;
+  limit?: number;
+}

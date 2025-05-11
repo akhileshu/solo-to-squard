@@ -1,0 +1,78 @@
+import { useState, useEffect, useCallback } from 'react';
+import { {{firstApiRoute apiRoutes}} } from '../api';
+import type { {{firstType types}} } from '../types';
+
+interface Use{{properCase name}}Return {
+  data: {{firstType types}} | null;
+  loading: boolean;
+  error: string | null;
+  refetch: () => Promise<void>;
+  {{#if serverActions}}
+  create: (input: any) => Promise<void>;
+  update: (id: string, input: any) => Promise<void>;
+  remove: (id: string) => Promise<void>;
+  {{/if}}
+}
+
+export function use{{properCase name}}(initialData?: {{firstType types}}): Use{{properCase name}}Return {
+  const [data, setData] = useState<{{firstType types}} | null>(initialData || null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await fetch({{firstApiRoute apiRoutes}});
+      if (!response.ok) throw new Error(response.statusText);
+      const result = await response.json();
+      setData(result);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  {{#if serverActions}}
+  const create = async (input: any) => {
+    try {
+      setLoading(true);
+      const response = await fetch({{firstApiRoute apiRoutes}}, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input)
+      });
+      if (!response.ok) throw new Error(response.statusText);
+      await fetchData();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const update = async (id: string, input: any) => {
+    // Similar implementation
+  };
+
+  const remove = async (id: string) => {
+    // Similar implementation
+  };
+  {{/if}}
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { 
+    data, 
+    loading, 
+    error, 
+    refetch: fetchData
+    {{#if serverActions}},
+    create,
+    update,
+    remove
+    {{/if}}
+  };
+}

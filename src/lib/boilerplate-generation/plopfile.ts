@@ -1,156 +1,43 @@
-// plopfile.ts
+import { Question } from "inquirer";
 import { NodePlopAPI } from "plop";
 import { featuresList } from "./features.json";
+import { PlopData } from "./types";
+import { registerHelpers } from "./utils/helpers";
+import { getDefaultParts, getPartChoices } from "./utils/prompts";
+import { getActionsForFeature } from "./utils/actions";
 
-/**
- *
- * - currently unable to import @/ alias path format , insted use relative path "../../src/lib/....ts"
- * - This file uses CommonJS module system (`"module": "commonjs"` in tsconfig.json),
- *   which allows using ES6-style `import` syntax even in `.ts` or `.js` files,
- *   without this error: `SyntaxError: unrecognized .ts extension`.
- * - Use Node Inspector (Debugger) to debug this file
- *  add `debugger;` at the place you want to pause execution:
- * Then run Plop with Node's inspect flag:
- * `node --inspect-brk node_modules/.bin/plop` or `npm run debug:plop`
- * Then open Chrome and go to: chrome://inspect
- */
+
 export default function generate(plop: NodePlopAPI) {
-  debugger;
+  registerHelpers(plop);
 
+  // Main generator
   plop.setGenerator("feature", {
-    description: "Generate feature boilerplate",
+    description: "Generate a new feature with all boilerplate",
     prompts: [
       {
-        type: "input",
-        name: "uiName",
-        message: "UI Name (e.g. profile, post, product):",
+        type: "list",
+        name: "featureName",
+        message: "Select feature to generate:",
+        choices: featuresList.map((f) => f.name),
       },
+      {
+        type: "checkbox",
+        name: "partsToGenerate",
+        message: "Select parts to generate:",
+        choices: (answers: PlopData) =>
+          getPartChoices(
+            featuresList.find((f) => f.name === answers.featureName)!
+          ),
+        default: (answers: PlopData) =>
+          getDefaultParts(
+            featuresList.find((f) => f.name === answers.featureName)!
+          ),
+      } as Question,
     ],
-    actions: function () {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const actions: any[] = [];
-
-      featuresList.forEach((feature) => {
-        const basePath = `src/features/${feature.name}`;
-
-        // Create base folders
-        const folders = [
-          "components",
-          "api",
-          "actions",
-          "schemas",
-          "hooks",
-          "utils",
-        ];
-        folders.forEach((folder) => {
-          actions.push({
-            type: "addMany",
-            destination: `${basePath}/${folder}/`,
-            base: "plop-templates/empty",
-            templateFiles: "plop-templates/empty/**",
-            skipIfExists: true,
-          });
-        });
-
-        // Components
-        feature.components.forEach((comp) => {
-          actions.push({
-            type: "add",
-            path: `${basePath}/components/${comp}.tsx`,
-            templateFile: "plop-templates/component.tsx.hbs",
-          });
-        });
-
-        // API Routes (optional)
-        feature.apiRoutes?.forEach((route) => {
-          actions.push({
-            type: "add",
-            path: `${basePath}/api/${route}.ts`,
-            templateFile: "plop-templates/api.ts.hbs",
-          });
-        });
-
-        // Actions
-        feature.serverActions.forEach((action) => {
-          actions.push({
-            type: "add",
-            path: `${basePath}/actions/${action}.ts`,
-            templateFile: "plop-templates/action.ts.hbs",
-          });
-        });
-
-        // Schemas
-        feature.zodSchemas.forEach((schema) => {
-          actions.push({
-            type: "add",
-            path: `${basePath}/schemas/${schema}.ts`,
-            templateFile: "plop-templates/zod.ts.hbs",
-          });
-        });
-
-        // Hooks
-        feature.hooks.forEach((hook) => {
-          actions.push({
-            type: "add",
-            path: `${basePath}/hooks/${hook}.ts`,
-            templateFile: "plop-templates/hook.ts.hbs",
-          });
-        });
-
-        // Utils
-        feature.utils.forEach((util) => {
-          actions.push({
-            type: "add",
-            path: `${basePath}/utils/${util}.ts`,
-            templateFile: "plop-templates/util.ts.hbs",
-          });
-        });
-
-        // Types
-        actions.push({
-          type: "add",
-          path: `${basePath}/types.ts`,
-          templateFile: "plop-templates/types.ts.hbs",
-        });
-
-        // Store
-        actions.push({
-          type: "add",
-          path: `${basePath}/store.ts`,
-          templateFile: "plop-templates/store.ts.hbs",
-        });
-
-        // Constants
-        actions.push({
-          type: "add",
-          path: `${basePath}/constants.ts`,
-          templateFile: "plop-templates/constants.ts.hbs",
-        });
-
-        // Messages
-        actions.push({
-          type: "add",
-          path: `${basePath}/messages.ts`,
-          templateFile: "plop-templates/messages.ts.hbs",
-        });
-
-        // Pages (app router)
-        feature.pages.forEach((page) => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const formattedPage = page
-            .replaceAll("[", "_")
-            .replaceAll("]", "")
-            .replaceAll("/", "__");
-          actions.push({
-            type: "add",
-            path: `app${page}/page.tsx`,
-            templateFile: "plop-templates/page.tsx.hbs",
-            data: { featureName: feature.name, pagePath: page },
-          });
-        });
-      });
-
-      return actions;
+    actions: function (data) {
+      const { featureName } = data as PlopData;
+      const featureConfig = featuresList.find((f) => f.name === featureName)!;
+      return getActionsForFeature(featureConfig);
     },
   });
 }

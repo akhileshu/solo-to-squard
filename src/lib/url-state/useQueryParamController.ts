@@ -16,7 +16,8 @@ export function useQueryParamController() {
 
   const updateParam = useCallback(
     (key: string, value: string, doRefresh = false) => {
-      const params = new URLSearchParams(window.location.search);
+      const params = new URLSearchParams(searchParams.toString());
+      // const params = new URLSearchParams(window.location.search);
       params.set(key, value);
       const url = `${window.location.pathname}?${params.toString()}`;
       if (doRefresh) router.push(url);
@@ -28,7 +29,7 @@ router.replace(...);   // updates URL + triggers SSR
 router.push(...);      // same as replace, but scrolls and adds history entry
 */
     },
-    [router]
+    [router, searchParams]
   );
 
   return { getParam, updateParam };

@@ -15,5 +15,18 @@ export const featuresList: FeatureConfig[] = [
     constants: ["videoStatus"],
     messages: ["ADD_SUCCESS", "ADD_ERROR", "REMOVE_SUCCESS"],
     pages: ["/video/[id]", "/video/upload", "/video/(analytics)"],
+    //
+    services: ["videoService"], // e.g., for encapsulating business logic
+    permissions: ["canUploadVideo", "canDeleteVideo"], // access control layer
+    layouts: ["VideoLayout"], // for shared page layout (Next.js)
+    providers: ["VideoProvider"], // context/provider (React Context API)
+    tests: {
+      components: ["VideoUploadForm.test.tsx"],
+      api: ["upload.test.ts"],
+      utils: ["formatDuration.test.ts"],
+    },
+    mockData: ["mockVideoData.ts"], // useful for testing/demo
+    env: ["VIDEO_UPLOAD_URL", "MAX_VIDEO_SIZE_MB"], // env var template entries
+    readme: true, // optionally generate a README.md per feature
   },
 ];
