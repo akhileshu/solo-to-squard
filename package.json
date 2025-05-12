@@ -5,11 +5,13 @@
   "scripts": {
     "dev-old": "next dev ",
     "dev": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' src/server.ts",
-    "debug:plop": "node --inspect-brk node_modules/.bin/plop",
+    "plop": "cross-env NODE_OPTIONS=\"--import tsx\" plop --plopfile=plopfile.ts",
+    "debug:plop": "cross-env NODE_OPTIONS=\"--import tsx --inspect-brk\" plop --plopfile=plopfile.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "cy:open": "cypress open"
   },
   "prisma": {
     "seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts"
@@ -45,6 +47,7 @@
     "@eslint/eslintrc": "^3",
     "@faker-js/faker": "^9.7.0",
     "@tailwindcss/postcss": "^4.0.15",
+    "@testing-library/cypress": "^10.0.3",
     "@types/express": "^5.0.1",
     "@types/inquirer": "^9.0.8",
     "@types/node": "^20.17.24",
@@ -53,12 +56,15 @@
     "@typescript-eslint/eslint-plugin": "^8.29.0",
     "@typescript-eslint/parser": "^8.29.0",
     "cross-env": "^7.0.3",
+    "cypress": "^14.3.3",
+    "cypress-social-logins": "^1.14.2",
     "eslint": "^9.23.0",
     "eslint-config-next": "15.2.2",
     "plop": "^4.0.1",
     "prisma": "^6.5.0",
     "tailwindcss": "^4.1.3",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }
 }

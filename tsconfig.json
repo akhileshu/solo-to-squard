@@ -28,7 +28,10 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "plopfile.js",
-    "src/server.ts"
-, "test.js", "src/lib/boilerplate-generation/plopfile.ts"  ],
+    "plopfile.ts",
+    "src/server.ts",
+    "test.js",
+    "plopfile.ts"
+  ],
   "exclude": ["node_modules", "src/temp"]
 }

@@ -1,4 +1,3 @@
-
 const templateBasePath = "src/lib/boilerplate-generation/plop-templates";
 
 export const templatePaths = {
@@ -14,6 +13,7 @@ export const templatePaths = {
   store: `${templateBasePath}/store.hbs`,
   component: `${templateBasePath}/component.hbs`,
   page: `${templateBasePath}/page.hbs`,
+  e2e: `${templateBasePath}/e2e-test.hbs`,
   //
   featureActions: `${templateBasePath}/feature/actions.js`,
   featurePrompt: `${templateBasePath}/feature/prompt.js`,

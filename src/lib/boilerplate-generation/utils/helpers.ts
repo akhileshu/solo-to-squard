@@ -135,3 +135,19 @@ export function registerHelpers(plop: NodePlopAPI) {
     )
   );
 }
+
+export const toKebabCase = (str:string) =>
+  str &&
+  str
+    .replace(/([a-z])([A-Z])/g, "$1-$2")
+    .replace(/\s+/g, "-")
+    .toLowerCase();
+// EXISTING HELPERS
+/*
+  plop.setHelper("camelCase", (str: string) =>
+    safe(
+      () => str.replace(/-([a-z])/g, (g) => g[1].toUpperCase()),
+      "__ERROR_camelCase"
+    )
+  );
+*/

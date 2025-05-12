@@ -101,7 +101,7 @@ export const getActionsForFeature = (feature: FeatureConfig) => {
   }
 
   // Services
-  if (feature.services?.length) {
+  if (false && feature.services?.length) {
     feature.services.forEach((service) => {
       actions.push({
         type: "add",
@@ -118,7 +118,7 @@ export const getActionsForFeature = (feature: FeatureConfig) => {
   }
 
   // Tests
-  if (feature.tests) {
+  if (false && feature.tests) {
     // Component tests
     if (feature.tests.components?.length) {
       feature.tests.components.forEach((test) => {
@@ -159,6 +159,16 @@ export const getActionsForFeature = (feature: FeatureConfig) => {
           components: feature.components,
           hooks: feature.hooks,
           store: feature.store,
+        },
+      });
+      actions.push({
+        type: "add",
+        path: `cypress/e2e/${feature.name}/${pageName}.cy.ts`,
+        templateFile: templatePaths.e2e, // define this in your template config
+        data: {
+          featureName: feature.name,
+          pageUrl: page,
+          testName: pageName,
         },
       });
     });
