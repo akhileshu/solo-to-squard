@@ -18,9 +18,38 @@ export interface FeatureConfig {
 
 import { Answers } from "inquirer";
 
+type RenderingComponentConfig = {
+  name: string;
+  option?: {
+    generateTestFile?: boolean;
+    isEditableView?: boolean;
+    renderAsList?: boolean; // true = render list (of detail cards), false/undefined = render detail card
+  };
+};
+type ComponentConfig = {
+  name: string;
+  option?: {
+    generateTestFile?: boolean;
+  };
+};
+
+type FeatureComponents = {
+  rendering?: RenderingComponentConfig[]; // just one list, no client/server split
+  forms?: {
+    create?: ComponentConfig[];
+    edit?: ComponentConfig[];
+    delete?: ComponentConfig[];
+  };
+  ui?: {
+    tables?: ComponentConfig[];
+    modals?: ComponentConfig[];
+  };
+};
+
 export interface FeatureConfig {
   name: string;
-  components?: string[];
+  // components?: string[];
+  components?: FeatureComponents;
   apiRoutes?: string[];
   serverActions?: string[];
   dbModel?: string[];

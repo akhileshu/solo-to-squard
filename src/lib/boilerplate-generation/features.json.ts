@@ -3,7 +3,77 @@ import { FeatureConfig } from "./types";
 export const featuresList: FeatureConfig[] = [
   {
     name: "video",
-    components: ["VideoUploadForm", "VideoList", "VideoPlayer"],
+    // components: ["VideoUploadForm", "VideoList", "VideoPlayer"],
+    components: {
+      rendering: [
+        {
+          name: "video",
+          option: {
+            generateTestFile: true,
+            isEditableView: true,
+            renderAsList: false,
+          },
+        },
+        {
+          name: "videoPlaylist",
+          option: {
+            isEditableView: true,
+            generateTestFile: false,
+            renderAsList: true,
+          },
+        },
+      ],
+      forms: {
+        create: [
+          {
+            name: "video",
+            option: {
+              generateTestFile: true,
+            },
+          },
+          {
+            name: "videoPlaylist",
+            option: {
+              generateTestFile: false,
+            },
+          },
+        ],
+        edit: [
+          {
+            name: "video",
+            option: {
+              generateTestFile: true,
+            },
+          },
+        ],
+        delete: [
+          {
+            name: "videoPlaylist",
+            option: {
+              generateTestFile: false,
+            },
+          },
+        ],
+      },
+      ui: {
+        tables: [
+          {
+            name: "videoTable",
+            option: {
+              generateTestFile: true,
+            },
+          },
+        ],
+        modals: [
+          {
+            name: "confirmDeleteVideo",
+            option: {
+              generateTestFile: false,
+            },
+          },
+        ],
+      },
+    },
     apiRoutes: ["upload", "process", "get", "delete"],
     serverActions: ["startProcessing", "notifyUser"],
     dbModel: ["Video"],

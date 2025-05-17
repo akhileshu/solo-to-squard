@@ -151,3 +151,16 @@ export const toKebabCase = (str:string) =>
     )
   );
 */
+
+export function toPascalCase(str: string): string {
+  return str
+    .replace(/[_-]+/g, " ") // convert snake/kebab to spaces
+    .replace(/\s+(.)/g, (_, group1) => group1.toUpperCase()) // capitalize first letter after space
+    .replace(/^(.)/, (_, group1) => group1.toUpperCase()) // capitalize first letter
+    .replace(/\s+/g, "");
+}
+
+export function toCamelCase(str: string): string {
+  const pascal = toPascalCase(str);
+  return pascal.charAt(0).toLowerCase() + pascal.slice(1);
+}

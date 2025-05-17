@@ -1,11 +1,15 @@
 import { ActionType } from "plop";
 import { FeatureConfig } from "../types";
 import { templatePaths } from "./template-paths";
+import { toPascalCase } from "./helpers";
+import { targetPaths } from "./target-paths";
 
 export const getActionsForFeature = (feature: FeatureConfig) => {
   const actions: ActionType[] = [];
 
+  /*
   // Components
+
   if (feature.components?.length) {
     feature.components.forEach((component) => {
       actions.push({
@@ -16,6 +20,20 @@ export const getActionsForFeature = (feature: FeatureConfig) => {
       });
     });
   }
+
+  // Index files
+  if (false && feature.components?.length) {
+    actions.push({
+      type: "add",
+      path: `src/features/${feature.name}/components/index.ts`,
+      templateFile: templatePaths.index,
+      data: { exports: feature.components },
+    });
+  }
+
+  */
+
+  GenerateActionsForFeatureComponents(feature, actions);
 
   // API Routes
   if (feature.apiRoutes?.length) {
@@ -152,7 +170,8 @@ export const getActionsForFeature = (feature: FeatureConfig) => {
       const pageName = page.replace(/[\/\(\)\[\]]/g, "");
       actions.push({
         type: "add",
-        path: `src/features/${feature.name}/pages${page}/page.tsx`,
+        // path: `src/features/${feature.name}/pages${page}/page.tsx`,
+        path: targetPaths.page(page),
         templateFile: templatePaths.page,
         data: {
           name: pageName,
@@ -171,16 +190,6 @@ export const getActionsForFeature = (feature: FeatureConfig) => {
           testName: pageName,
         },
       });
-    });
-  }
-
-  // Index files
-  if (feature.components?.length) {
-    actions.push({
-      type: "add",
-      path: `src/features/${feature.name}/components/index.ts`,
-      templateFile: templatePaths.index,
-      data: { exports: feature.components },
     });
   }
 
@@ -203,4 +212,110 @@ export const getActionsForFeature = (feature: FeatureConfig) => {
   }
 
   return actions;
+};
+
+export const GenerateActionsForFeatureComponents = (
+  feature: FeatureConfig,
+  actions: ActionType[]
+) => {
+  if (feature.components) {
+    const { rendering, forms, ui } = feature.components;
+
+    // 🔷 Rendering Components (Unified)
+    rendering?.forEach((component) => {
+      const data = {
+        name: component.name,
+        isEditableView: component.option?.isEditableView ?? false,
+        renderAsList: component.option?.renderAsList ?? false,
+      };
+
+      // Render Server
+      actions.push({
+        type: "add",
+        path: `src/features/${feature.name}/components/${component.name}/render-server.tsx`,
+        templateFile: templatePaths.renderServer,
+        data,
+      });
+
+      // Render Client
+      actions.push({
+        type: "add",
+        path: `src/features/${feature.name}/components/${component.name}/render-client.tsx`,
+        templateFile: templatePaths.renderClient,
+        data,
+      });
+
+      // Optional test file
+      if (component.option?.generateTestFile) {
+        actions.push({
+          type: "add",
+          path: `src/features/${feature.name}/components/${component.name}/__tests__/${component.name}.test.tsx`,
+          templateFile: templatePaths.componentTest,
+          data,
+        });
+      }
+    });
+
+    // 🔷 Form Components (Create, Edit, Delete)
+    ["create", "edit", "delete"].forEach((formType) => {
+      const formComponents = forms?.[formType as keyof typeof forms];
+      formComponents?.forEach((component) => {
+        const templateKey = `form${toPascalCase(
+          formType
+        )}` as keyof typeof templatePaths;
+
+        if (!(templateKey in templatePaths)) {
+          throw new Error(`Template path for ${templateKey} not found`);
+        }
+
+        const data = { name: component.name };
+        actions.push({
+          type: "add",
+          path: `src/features/${feature.name}/components/${component.name}/${formType}.tsx`,
+          templateFile: templatePaths[templateKey],
+          data,
+        });
+
+        if (component.option?.generateTestFile) {
+          actions.push({
+            type: "add",
+            path: `src/features/${feature.name}/components/${component.name}/__tests__/${formType}.test.tsx`,
+            templateFile: templatePaths.componentTest,
+            data,
+          });
+        }
+      });
+    });
+
+    // 🔷 UI Components (Tables, Modals)
+    ["table", "modal"].forEach((uiType) => {
+      const uiComponents = ui?.[uiType as keyof typeof ui];
+      uiComponents?.forEach((component) => {
+
+        const templateKey = `ui${toPascalCase(
+          uiType
+        )}` as keyof typeof templatePaths;
+
+        if (!(templateKey in templatePaths)) {
+          throw new Error(`Template path for ${templateKey} not found`);
+        }
+        const data = { name: component.name };
+        actions.push({
+          type: "add",
+          path: `src/features/${feature.name}/components/${component.name}/${uiType}.tsx`,
+          templateFile: templatePaths[templateKey],
+          data,
+        });
+
+        if (component.option?.generateTestFile) {
+          actions.push({
+            type: "add",
+            path: `src/features/${feature.name}/components/${component.name}/__tests__/${uiType}.test.tsx`,
+            templateFile: templatePaths.componentTest,
+            data,
+          });
+        }
+      });
+    });
+  }
 };

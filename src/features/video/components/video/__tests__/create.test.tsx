@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Videouploadform } from '../video-upload-form';
+import { Video } from '../video';
 
 // Mock hooks if needed
 jest.mock('../../hooks/use__ERROR_properCase', () => ({
@@ -10,7 +10,7 @@ jest.mock('../../hooks/use__ERROR_properCase', () => ({
   })
 }));
 
-describe('<Videouploadform />', () => {
+describe('<Video />', () => {
   const defaultProps = {
     // Add default props here
   };
@@ -20,8 +20,8 @@ describe('<Videouploadform />', () => {
   });
 
   it('renders without crashing', () => {
-    render(<Videouploadform {...defaultProps} />);
-    expect(screen.getByTestId('video-upload-form-component')).toBeInTheDocument();
+    render(<Video {...defaultProps} />);
+    expect(screen.getByTestId('video-component')).toBeInTheDocument();
   });
 
   it('displays loading state', () => {
@@ -29,7 +29,7 @@ describe('<Videouploadform />', () => {
   });
 
   it('handles user interactions', async () => {
-    render(<Videouploadform {...defaultProps} />);
+    render(<Video {...defaultProps} />);
     
     await act(async () => {
       // Simulate user interactions

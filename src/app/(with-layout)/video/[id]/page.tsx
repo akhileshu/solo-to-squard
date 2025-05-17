@@ -1,14 +1,14 @@
 import React from 'react';
-import { VideoUploadForm, VideoList, VideoPlayer } from '../../components';
+import { __MISSING_joinWithComma } from '../../components';
 import { useuseUploadVideo, useuseProcessStatus } from '../../hooks';
 import { useVideoStore } from '../../store';
 
 
-interface VideouploadPageProps {
+interface VideoidPageProps {
   // Add any page props here (e.g., from getServerSideProps)
 }
 
-export default function VideouploadPage({}: VideouploadPageProps) {
+export default function VideoidPage({}: VideoidPageProps) {
   // Hooks usage
   const useUploadVideo = useUseuploadvideo();
   const useProcessStatus = useUseprocessstatus();
@@ -17,11 +17,11 @@ export default function VideouploadPage({}: VideouploadPageProps) {
   const { state, actions } = useVideoStore();
 
   return (
-    <div className="videoupload-page">
-      <h1>Videoupload Page</h1>
+    <div className="videoid-page">
+      <h1>Videoid Page</h1>
       
       {/* Example component usage */}
-      <VideoUploadForm />
+      < />
     </div>
   );
 }

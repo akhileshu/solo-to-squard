@@ -14,6 +14,14 @@ export const templatePaths = {
   component: `${templateBasePath}/component.hbs`,
   page: `${templateBasePath}/page.hbs`,
   e2e: `${templateBasePath}/e2e-test.hbs`,
+  //components
+  renderServer: `${templateBasePath}/components/render-server.hbs`,
+  renderClient: `${templateBasePath}/components/render-client.hbs`,
+  formCreate: `${templateBasePath}/components/form-create.hbs`,
+  formEdit: `${templateBasePath}/components/form-edit.hbs`,
+  formDelete: `${templateBasePath}/components/form-delete.hbs`,
+  uiTable: `${templateBasePath}/components/ui-table.hbs`,
+  uiModal: `${templateBasePath}/components/ui-modal.hbs`,
   //
   featureActions: `${templateBasePath}/feature/actions.js`,
   featurePrompt: `${templateBasePath}/feature/prompt.js`,

@@ -14,3 +14,37 @@ project-root/
 │   ├── constants.ts.hbs
 │   ├── messages.ts.hbs
 │   └── page.tsx.hbs
+
+/*========================================
+
+if you want complete server component for rendering cut the render client component into the render server component file
+
+ex:
+export async function Render{{pascalCase name}}s({ className }: { className?: string }) {
+  const {{camelCase name}}sResult = await get{{pascalCase name}}s();
+
+  return (
+    <{{pascalCase name}}ListView {{camelCase name}}sResult={ {{camelCase name}}sResult} className={cn("", className)} />
+  );
+}
+
+function {{pascalCase name}}ListView({
+  {{camelCase name}}sResult,
+  className,
+}: {{pascalCase name}}ListViewProps) {
+  const cardTitle = "{{pascalCase name}} List";
+
+  const statusMessage = renderStatusMessage({{camelCase name}}sResult, cardTitle);
+  if (statusMessage || !{{camelCase name}}sResult.ok) return statusMessage;
+
+  const { data } = {{camelCase name}}sResult;
+
+...
+
+}
+
+/*========================================
+
+
+/*========================================
+
