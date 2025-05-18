@@ -75,7 +75,14 @@ export const featuresList: FeatureConfig[] = [
       },
     },
     apiRoutes: ["upload", "process", "get", "delete"],
-    serverActions: ["startProcessing", "notifyUser"],
+    // serverActions: ["startProcessing", "notifyUser"],
+    serverActions: {
+      generateCRUD: true,
+      custom: [
+        { operation: "read", name: "getTrendingPlaylists" },
+        { operation: "create", name: "clonePlaylist" },
+      ],
+    },
     dbModel: ["Video"],
     zodSchemas: ["videoSchema", "videoInputSchema"],
     hooks: ["useUploadVideo", "useProcessStatus"],

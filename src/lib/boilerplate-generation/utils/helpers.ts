@@ -62,6 +62,10 @@ export function registerHelpers(plop: NodePlopAPI) {
     safe(() => types?.[0] ?? "any", "__MISSING_firstType")
   );
 
+  plop.setHelper("eq", function (a, b) {
+    return a === b;
+  });
+
   plop.setHelper("firstZodSchema", (schemas: string[] | undefined) =>
     safe(() => schemas?.[0] ?? "anySchema", "__MISSING_firstZodSchema")
   );
@@ -136,7 +140,7 @@ export function registerHelpers(plop: NodePlopAPI) {
   );
 }
 
-export const toKebabCase = (str:string) =>
+export const toKebabCase = (str: string) =>
   str &&
   str
     .replace(/([a-z])([A-Z])/g, "$1-$2")
@@ -163,4 +167,20 @@ export function toPascalCase(str: string): string {
 export function toCamelCase(str: string): string {
   const pascal = toPascalCase(str);
   return pascal.charAt(0).toLowerCase() + pascal.slice(1);
+}
+
+export function toJoinedKebabCase(...parts: string[]): string {
+  return parts
+    .filter(Boolean)
+    .join("-") // Join with hyphens
+    .replace(/([a-z])([A-Z])/g, "$1-$2") // Convert camelCase to kebab-case
+    .toLowerCase(); // Convert to lowercase
+}
+
+export function toJoinedSnakeCase(...parts: string[]): string {
+  return parts
+    .filter(Boolean)
+    .join("_") // Join with underscores
+    .replace(/([a-z])([A-Z])/g, "$1_$2") // Handle camelCase boundaries
+    .toLowerCase(); // Final lowercase
 }

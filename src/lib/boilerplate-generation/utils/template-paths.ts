@@ -23,6 +23,9 @@ export const templatePaths = {
   uiTable: `${templateBasePath}/components/ui-table.hbs`,
   uiModal: `${templateBasePath}/components/ui-modal.hbs`,
   //
+  serverActionsCRUD: `${templateBasePath}/server-actions/serverActionsCRUD.hbs`,
+  serverActionsCustom: `${templateBasePath}/server-actions/serverActionsCustom.hbs`,
+  //
   featureActions: `${templateBasePath}/feature/actions.js`,
   featurePrompt: `${templateBasePath}/feature/prompt.js`,
 };

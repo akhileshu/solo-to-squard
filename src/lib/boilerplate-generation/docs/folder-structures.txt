@@ -45,6 +45,22 @@ function {{pascalCase name}}ListView({
 
 /*========================================
 
+todo : need to structure here for 
+<Render{{pascalCase name}} {{camelCase name}}={data} />
+
+          <Button disabled={editing} onClick={startEditing}>Edit</Button>
+          <Render{{pascalCase name}} {{camelCase name}}={data} />
+        </>
+      )}
+    </AppCard>
+  );
+  {{else}}
+  return (
+    <AppCard title={cardTitle} className={cn("space-y-2", className)}>
+      <Render{{pascalCase name}} {{camelCase name}}={data} />
+    </AppCard>
+  );
+  {{/if}}
 
 /*========================================
 

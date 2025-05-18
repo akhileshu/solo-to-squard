@@ -1,10 +1,10 @@
 import { cn } from "@/lib/utils";
 import { getVideos, getVideoById } from "@/features/video/actions/videoActions";
-import { VideoListView } from "@/features/video/components/VideoListView";
-import { VideoDetailCard } from "@/features/video/components/VideoDetailCard";
+import { VideoListView } from "./video-list-view";
+import { VideoDetailCard } from "./video-detail-card";
 
 // Render Single Video
-export async function RenderVideo({ id, className }: { id: string; className?: string }) {
+export async function videoRenderer({ id, className }: { id: string; className?: string }) {
   const videoResult = await getVideoById(id);
 
   return (

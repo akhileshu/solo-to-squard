@@ -7,13 +7,14 @@ import {
   getDefaultParts,
   getPartChoices,
 } from "./src/lib/boilerplate-generation/utils/prompts";
-import { getActionsForFeature } from "./src/lib/boilerplate-generation/utils/actions";
+import { getActionsForFeature } from "./src/lib/boilerplate-generation/utils/actions/actions";
 
 /**
- * 
+ *
  * - ✖  ++ Cannot read properties of undefined (reading 'replace')
  * - this kind of plop errors can happen if using undeclared plop helpers error in plop helper function or any other similar error in process of hbs template to code generation
- * 
+ *
+ * - saw a bug while debugging plop with node inspect flag , breakpoint doesn't trigger unless i run plop once in normal flow;
  */
 export default function generate(plop: NodePlopAPI) {
   debugger;

@@ -7,7 +7,7 @@ import { getVideoPlaylists, getVideoPlaylistById } from "@/features/videoPlaylis
 
 import { useEditToggle } from "@/lib/forms-inputs/utils";
 import { Button } from "@/lib/forms-inputs/button";
-import { EditVideoPlaylistForm } from "./EditVideoPlaylistForm";
+import { EditVideoPlaylistForm } from "./edit-videoPlaylist-form";
 
 
 type VideoPlaylistDetailCardProps = {
@@ -21,12 +21,12 @@ export function VideoPlaylistDetailCard({
 }: VideoPlaylistDetailCardProps) {
   const cardTitle = "VideoPlaylist";
 
+  const { editing, startEditing, cancelEditing } = useEditToggle();
   const statusMessage = renderStatusMessage(videoPlaylistResult, cardTitle);
   if (statusMessage || !videoPlaylistResult.ok) return statusMessage;
 
   const { data } = videoPlaylistResult;
 
-  const { editing, startEditing, cancelEditing } = useEditToggle();
 
   return (
     <AppCard title={cardTitle} className={cn("space-y-2", className)}>
@@ -34,7 +34,7 @@ export function VideoPlaylistDetailCard({
         <EditVideoPlaylistForm videoPlaylist={data} onCancel={cancelEditing} />
       ) : (
         <>
-          <Button onClick={startEditing}>Edit</Button>
+          <Button disabled={editing} onClick={startEditing}>Edit</Button>
           <RenderVideoPlaylist videoPlaylist={data} />
         </>
       )}

@@ -7,7 +7,7 @@ import { getVideos, getVideoById } from "@/features/video/actions/videoActions";
 
 import { useEditToggle } from "@/lib/forms-inputs/utils";
 import { Button } from "@/lib/forms-inputs/button";
-import { EditVideoForm } from "./EditVideoForm";
+import { EditVideoForm } from "./edit-video-form";
 
 
 type VideoDetailCardProps = {
@@ -21,12 +21,12 @@ export function VideoDetailCard({
 }: VideoDetailCardProps) {
   const cardTitle = "Video";
 
+  const { editing, startEditing, cancelEditing } = useEditToggle();
   const statusMessage = renderStatusMessage(videoResult, cardTitle);
   if (statusMessage || !videoResult.ok) return statusMessage;
 
   const { data } = videoResult;
 
-  const { editing, startEditing, cancelEditing } = useEditToggle();
 
   return (
     <AppCard title={cardTitle} className={cn("space-y-2", className)}>
@@ -34,7 +34,7 @@ export function VideoDetailCard({
         <EditVideoForm video={data} onCancel={cancelEditing} />
       ) : (
         <>
-          <Button onClick={startEditing}>Edit</Button>
+          <Button disabled={editing} onClick={startEditing}>Edit</Button>
           <RenderVideo video={data} />
         </>
       )}

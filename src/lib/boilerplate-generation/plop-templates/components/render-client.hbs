@@ -8,7 +8,7 @@ import { get{{pascalCase name}}s, get{{pascalCase name}}ById } from "@/features/
 {{#if isEditableView}}
 import { useEditToggle } from "@/lib/forms-inputs/utils";
 import { Button } from "@/lib/forms-inputs/button";
-import { Edit{{pascalCase name}}Form } from "./Edit{{pascalCase name}}Form";
+import { Edit{{pascalCase name}}Form } from "./edit-{{camelCase name}}-form";
 {{/if}}
 
 
@@ -23,13 +23,13 @@ export function {{pascalCase name}}DetailCard({
 }: {{pascalCase name}}DetailCardProps) {
   const cardTitle = "{{pascalCase name}}";
 
+  const { editing, startEditing, cancelEditing } = useEditToggle();
   const statusMessage = renderStatusMessage({{camelCase name}}Result, cardTitle);
   if (statusMessage || !{{camelCase name}}Result.ok) return statusMessage;
 
   const { data } = {{camelCase name}}Result;
 
   {{#if isEditableView}}
-  const { editing, startEditing, cancelEditing } = useEditToggle();
 
   return (
     <AppCard title={cardTitle} className={cn("space-y-2", className)}>
@@ -37,7 +37,7 @@ export function {{pascalCase name}}DetailCard({
         <Edit{{pascalCase name}}Form {{camelCase name}}={data} onCancel={cancelEditing} />
       ) : (
         <>
-          <Button onClick={startEditing}>Edit</Button>
+          <Button disabled={editing} onClick={startEditing}>Edit</Button>
           <Render{{pascalCase name}} {{camelCase name}}={data} />
         </>
       )}

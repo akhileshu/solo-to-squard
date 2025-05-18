@@ -51,7 +51,13 @@ export interface FeatureConfig {
   // components?: string[];
   components?: FeatureComponents;
   apiRoutes?: string[];
-  serverActions?: string[];
+  serverActions?: {
+    generateCRUD?: boolean;
+    custom: {
+      operation: "create" | "read" | "update" | "delete";
+      name: string;
+    }[];
+  };
   dbModel?: string[];
   zodSchemas?: string[];
   hooks?: string[];
