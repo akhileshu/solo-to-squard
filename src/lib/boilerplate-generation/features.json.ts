@@ -3,7 +3,6 @@ import { FeatureConfig } from "./types";
 export const featuresList: FeatureConfig[] = [
   {
     name: "video",
-    // components: ["VideoUploadForm", "VideoList", "VideoPlayer"],
     components: {
       rendering: [
         {
@@ -74,8 +73,6 @@ export const featuresList: FeatureConfig[] = [
         ],
       },
     },
-    apiRoutes: ["upload", "process", "get", "delete"],
-    // serverActions: ["startProcessing", "notifyUser"],
     serverActions: {
       generateCRUD: true,
       custom: [
@@ -83,21 +80,24 @@ export const featuresList: FeatureConfig[] = [
         { operation: "create", name: "clonePlaylist" },
       ],
     },
-    dbModel: ["Video"],
-    zodSchemas: ["videoSchema", "videoInputSchema"],
-    hooks: ["useUploadVideo", "useProcessStatus"],
+    prismaSchemas: ["Video","VideoPlaylist"],
+    zodSchemas: ["video", "videoInput"],
+    hooks: ["uploadVideo", "processStatus"],
     types: ["Video"],
-    store: "useVideoStore",
     utils: ["formatDuration", "getThumbnail"],
     constants: ["videoStatus"],
-    messages: ["ADD_SUCCESS", "ADD_ERROR", "REMOVE_SUCCESS"],
     pages: ["/video/[id]", "/video/upload", "/video/(analytics)"],
-    //
+
+    // below fields are still not generated and tested
+    apiRoutes: ["upload", "process", "get", "delete"],
+    store: "useVideoStore",
+    messages: ["ADD_SUCCESS", "ADD_ERROR", "REMOVE_SUCCESS"],
     services: ["videoService"], // e.g., for encapsulating business logic
     permissions: ["canUploadVideo", "canDeleteVideo"], // access control layer
     layouts: ["VideoLayout"], // for shared page layout (Next.js)
     providers: ["VideoProvider"], // context/provider (React Context API)
     tests: {
+      // todo : can add an option field to generate test files with individual sections like components , serveractions , etc
       components: ["VideoUploadForm.test.tsx"],
       api: ["upload.test.ts"],
       utils: ["formatDuration.test.ts"],

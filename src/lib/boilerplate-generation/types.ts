@@ -58,13 +58,14 @@ export interface FeatureConfig {
       name: string;
     }[];
   };
-  dbModel?: string[];
+  prismaSchemas?: string[];
   zodSchemas?: string[];
   hooks?: string[];
   types?: string[];
-  store?: string;
   utils?: string[];
   constants?: string[];
+
+  store?: string;
   messages?: string[];
   pages?: string[];
   services?: string[];

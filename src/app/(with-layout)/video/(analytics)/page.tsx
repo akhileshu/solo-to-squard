@@ -4,11 +4,11 @@ import { useuploadVideo, useprocessStatus } from '../../hooks';
 import { useVideoStore } from '../../store';
 
 
-interface VideoidPageProps {
+interface VideoanalyticsPageProps {
   // Add any page props here (e.g., from getServerSideProps)
 }
 
-export default function VideoidPage({}: VideoidPageProps) {
+export default function VideoanalyticsPage({}: VideoanalyticsPageProps) {
   // Hooks usage
   const uploadVideo = useUploadvideo();
   const processStatus = useProcessstatus();
@@ -17,8 +17,8 @@ export default function VideoidPage({}: VideoidPageProps) {
   const { state, actions } = useVideoStore();
 
   return (
-    <div className="videoid-page">
-      <h1>Videoid Page</h1>
+    <div className="videoanalytics-page">
+      <h1>Videoanalytics Page</h1>
       
       {/* Example component usage */}
       < />

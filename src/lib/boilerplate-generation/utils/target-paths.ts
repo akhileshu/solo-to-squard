@@ -3,11 +3,48 @@ import { toJoinedKebabCase, toPascalCase } from "./helpers";
 const featureBasePath = "src/features";
 
 export const targetPaths = {
-  componentTest: (feature: string, name: string) =>
-    `${featureBasePath}/${feature}/components/${name}/${name}.test.tsx`,
-
   /**ex: src/app/(with-layout)/video/upload/page.tsx */
   page: (page: string) => `src/app/(with-layout)/${page}/page.tsx`,
+
+  /**
+   * @example
+   * targetPaths.schema("video", "videoInput")
+   * // → src/features/video/schemas/videoInputSchema.ts
+   */
+  schema: (feature: string, name: string) =>
+    `${featureBasePath}/${feature}/schemas/${name}Schema.ts`,
+
+  /**
+   * @example
+   * targetPaths.hook("video", "uploadVideo")
+   * // → src/features/video/hooks/useUploadVideo.ts
+   */
+  hook: (feature: string, name: string) =>
+    `${featureBasePath}/${feature}/hooks/use${toPascalCase(name)}.ts`,
+
+  /**
+   * @example
+   * targetPaths.type("video", "video")
+   * // → src/features/video/types/videoTypes.ts
+   */
+  type: (feature: string, name: string) =>
+    `${featureBasePath}/${feature}/types/${name}Types.ts`,
+
+  /**
+   * @example
+   * targetPaths.util("video", "formatDuration")
+   * // → src/features/video/utils/formatDuration.ts
+   */
+  util: (feature: string, name: string) =>
+    `${featureBasePath}/${feature}/utils/${name}.ts`,
+
+  /**
+   * @example
+   * targetPaths.constant("video", "videoStatus")
+   * // → src/features/video/constants/videoStatus.ts
+   */
+  constant: (feature: string, name: string) =>
+    `${featureBasePath}/${feature}/constants/${name}.ts`,
 
   /**
    * Examples:
@@ -45,6 +82,11 @@ export const targetPaths = {
       featureName,
       type === "custom" ? `${operation}-action` : "CRUD-actions"
     )}.tsx`,
+
+  serverActionsIndex: (featureName: string) =>
+    `${featureBasePath}/${featureName}/actions/index.ts`,
+
+  prismaModel: (schemaName: string) => `prisma/models/${schemaName}.prisma`,
 
   /**
    * Examples:
@@ -108,4 +150,8 @@ export const targetPaths = {
   store: (feature: string) => `${featureBasePath}/${feature}/store.ts`,
 
     */
+
+  /** componentTest : method being used but not tested */
+  componentTest: (feature: string, name: string) =>
+    `${featureBasePath}/${feature}/components/${name}/${name}.test.tsx`,
 };

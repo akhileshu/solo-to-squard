@@ -1,19 +1,59 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-export const videoInputSchema = z.object({
-  id: z.string().optional(),
-  title: z.string().min(3).max(100),
-  description: z.string().max(500).optional(),
-  status: z.enum(['active', 'inactive', 'archived']).default('active'),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional()
-});
+export const videoInput = z.object({
+  // Basic primitive types
+  id: z.string().uuid(), // Common for database IDs
+  name: z.string().min(1).max(255), // Standard text field with length constraints
+  description: z.string().optional(), // Optional field
+  isActive: z.boolean().default(true), // Boolean with default value
+  count: z.number().int().nonnegative(), // Non-negative integer
+  price: z.number().positive(), // Positive number for monetary values
+  rating: z.number().min(0).max(5), // Rating between 0-5
 
-export const videoInputSchemaInput = videoInputSchema.omit({ 
-  id: true,
-  createdAt: true,
-  updatedAt: true 
-});
+  // Date/time fields
+  createdAt: z.date().default(() => new Date()), // Auto-generated timestamp
+  updatedAt: z.date().optional(), // Optional timestamp
+  expirationDate: z.date().min(new Date()), // Future date validation
 
-export type Videoinputschema = z.infer<typeof videoInputSchema>;
-export type VideoinputschemaInput = z.infer<typeof videoInputSchemaInput>;
+  // Advanced types
+  tags: z.array(z.string()).nonempty(), // Array of strings with at least one item
+  metadata: z.record(z.string(), z.unknown()).optional(), // Key-value store
+  coordinates: z.tuple([z.number(), z.number()]), // Latitude/longitude pair
+  
+  // Union types for status fields
+  status: z.enum(["pending", "active", "suspended", "deleted"]),
+  priority: z.union([z.literal("low"), z.literal("medium"), z.literal("high")]),
+
+  // Email and URL validation
+  email: z.string().email(),
+  website: z.string().url().optional(),
+
+  // Custom validation
+  password: z.string()
+    .min(8)
+    .max(100)
+    .regex(/[A-Z]/, "Must contain at least one uppercase letter")
+    .regex(/[0-9]/, "Must contain at least one number"),
+
+  // Nested objects
+  address: z.object({
+    street: z.string(),
+    city: z.string(),
+    zipCode: z.string(),
+    country: z.string()
+  }).optional(),
+
+  // Advanced use cases
+  relatedItems: z.array(z.object({
+    id: z.string(),
+    quantity: z.number().int().positive()
+  })).optional(),
+
+  // Conditional validation
+  discountCode: z.string().optional().refine(
+    (val) => !val || val.length === 10,
+    { message: "Discount code must be 10 characters long if provided" }
+  )
+}).strict(); // Using strict() to prevent unknown properties
+
+export type VideoInput = z.infer<typeof videoInput>;

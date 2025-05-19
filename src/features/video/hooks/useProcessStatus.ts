@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export function {{camelCase name}}() {
+export function processStatus() {
   const [state, setState] = useState(null);
 
   return {

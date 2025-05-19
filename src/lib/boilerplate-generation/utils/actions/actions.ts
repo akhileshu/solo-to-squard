@@ -1,14 +1,22 @@
 import { ActionType } from "plop";
 import { FeatureConfig } from "../../types";
-import { targetPaths } from "../target-paths";
-import { templatePaths } from "../template-paths";
+import { GenerateActionsForFeatureAssets } from "./GenerateActionsForFeatureAssets";
 import { GenerateActionsForFeatureComponents } from "./GenerateActionsForFeatureComponents";
+import { GenerateActionsForFeaturePages } from "./GenerateActionsForFeaturePages";
 import { GenerateActionsForServerActions } from "./GenerateActionsForServerActions";
 
 export const getActionsForFeature = (feature: FeatureConfig) => {
   const actions: ActionType[] = [];
 
-  /*
+  GenerateActionsForServerActions(feature, actions);
+  GenerateActionsForFeatureComponents(feature, actions);
+  GenerateActionsForFeaturePages(feature, actions);
+  GenerateActionsForFeatureAssets(feature, actions);
+
+  return actions;
+};
+
+/*
   // Components
 
   if (feature.components?.length) {
@@ -89,22 +97,6 @@ export const getActionsForFeature = (feature: FeatureConfig) => {
     });
   }
 
-  */
-
-  GenerateActionsForFeatureComponents(feature, actions);
-  GenerateActionsForServerActions(feature, actions);
-
-  // Models
-  if (feature.dbModel?.length) {
-    feature.dbModel.forEach((model) => {
-      actions.push({
-        type: "add",
-        path: `src/features/${feature.name}/models/${model}.ts`,
-        templateFile: templatePaths.model,
-        data: { name: model, types: feature.types },
-      });
-    });
-  }
 
   // Hooks
   if (feature.hooks?.length) {
@@ -142,35 +134,6 @@ export const getActionsForFeature = (feature: FeatureConfig) => {
         path: `src/features/${feature.name}/types/${type}.ts`,
         templateFile: templatePaths.type,
         data: { name: type },
-      });
-    });
-  }
-
-  // Pages
-  if (feature.pages?.length) {
-    feature.pages.forEach((page) => {
-      const pageName = page.replace(/[\/\(\)\[\]]/g, "");
-      actions.push({
-        type: "add",
-        // path: `src/features/${feature.name}/pages${page}/page.tsx`,
-        path: targetPaths.page(page),
-        templateFile: templatePaths.page,
-        data: {
-          name: pageName,
-          components: feature.components,
-          hooks: feature.hooks,
-          store: feature.store,
-        },
-      });
-      actions.push({
-        type: "add",
-        path: `cypress/e2e/${feature.name}/${pageName}.cy.ts`,
-        templateFile: templatePaths.e2e, // define this in your template config
-        data: {
-          featureName: feature.name,
-          pageUrl: page,
-          testName: pageName,
-        },
       });
     });
   }
@@ -213,7 +176,4 @@ export const getActionsForFeature = (feature: FeatureConfig) => {
     }
   }
 
-  return actions;
-};
-
-
+  */

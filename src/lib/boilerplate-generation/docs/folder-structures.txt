@@ -64,3 +64,4 @@ todo : need to structure here for
 
 /*========================================
 
+initially this code generation may look flat or as this or other projects grow and we get to use more and more pattern based code , will include that here and this generator will act as our sigle central libarary for common and most important coding standards and patterns

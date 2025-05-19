@@ -7,33 +7,54 @@ export const GenerateActionsForServerActions = (
   feature: FeatureConfig,
   actions: ActionType[]
 ) => {
- const serverActions = feature.serverActions;
+  const serverActions = feature.serverActions;
 
- // 1. Handle CRUD generation
- if (serverActions?.generateCRUD) {
-   actions.push({
-     type: "add",
-     path: targetPaths.serverAction(feature.name, "crud"),
-     templateFile: templatePaths.serverActionsCRUD,
-     data: {
-       name: feature.name, // For pascalCase, camelCase
-       schemaName: feature.name, // or use a different one if needed
-     },
-   });
- }
+  // 1. Handle CRUD generation
+  if (serverActions?.generateCRUD) {
+    actions.push({
+      type: "add",
+      path: targetPaths.serverAction(feature.name, "crud"),
+      templateFile: templatePaths.serverActionsCRUD,
+      data: {
+        name: feature.name, // For pascalCase, camelCase
+        schemaName: feature.name, // or use a different one if needed
+      },
+    });
+  }
 
- // 2. Handle custom server actions
- if (serverActions?.custom?.length) {
-   serverActions.custom.forEach((customAction) => {
-     actions.push({
-       type: "add",
-       path: targetPaths.serverAction(feature.name, "custom", customAction.operation),
-       templateFile: templatePaths.serverActionsCustom,
-       data: {
-         ...customAction,
-         featureName: feature.name,
-       },
-     });
-   });
- }
+  // 2. Handle custom server actions
+  if (serverActions?.custom?.length) {
+    serverActions.custom.forEach((customAction) => {
+      actions.push({
+        type: "add",
+        path: targetPaths.serverAction(
+          feature.name,
+          "custom",
+          customAction.operation
+        ),
+        templateFile: templatePaths.serverActionsCustom,
+        data: {
+          ...customAction,
+          featureName: feature.name,
+        },
+      });
+    });
+  }
+  // 3. Handle server action index file
+  if (serverActions?.generateCRUD || serverActions?.custom?.length) {
+    const customActions =
+      serverActions.custom?.map((action) => ({
+        name: action.name,
+      })) ?? [];
+
+    actions.push({
+      type: "add",
+      path: targetPaths.serverActionsIndex(feature.name),
+      templateFile: templatePaths.serverActionsIndex,
+      data: {
+        name: feature.name,
+        customActions,
+      },
+    });
+  }
 };

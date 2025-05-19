@@ -1,19 +1,6 @@
 const templateBasePath = "src/lib/boilerplate-generation/plop-templates";
 
 export const templatePaths = {
-  schema: `${templateBasePath}/schema.hbs`,
-  hook: `${templateBasePath}/hook.hbs`,
-  type: `${templateBasePath}/type.hbs`,
-  apiTest: `${templateBasePath}/api-test.hbs`,
-  model: `${templateBasePath}/model.hbs`,
-  service: `${templateBasePath}/service.hbs`,
-  componentTest: `${templateBasePath}/component-test.hbs`,
-  apiRoute: `${templateBasePath}/api-route.hbs`,
-  index: `${templateBasePath}/index.hbs`,
-  store: `${templateBasePath}/store.hbs`,
-  component: `${templateBasePath}/component.hbs`,
-  page: `${templateBasePath}/page.hbs`,
-  e2e: `${templateBasePath}/e2e-test.hbs`,
   //components
   renderServer: `${templateBasePath}/components/render-server.hbs`,
   renderClient: `${templateBasePath}/components/render-client.hbs`,
@@ -25,7 +12,23 @@ export const templatePaths = {
   //
   serverActionsCRUD: `${templateBasePath}/server-actions/serverActionsCRUD.hbs`,
   serverActionsCustom: `${templateBasePath}/server-actions/serverActionsCustom.hbs`,
+  serverActionsIndex: `${templateBasePath}/server-actions/index.hbs`,
   //
-  featureActions: `${templateBasePath}/feature/actions.js`,
-  featurePrompt: `${templateBasePath}/feature/prompt.js`,
+  pageRoute: `${templateBasePath}/page-route.hbs`,
+  zodSchema: `${templateBasePath}/zod-schema.hbs`,
+  hook: `${templateBasePath}/hook.hbs`,
+  type: `${templateBasePath}/type.hbs`,
+  util: `${templateBasePath}/util.hbs`,
+  constant: `${templateBasePath}/constant.hbs`,
+  prismaModel: `${templateBasePath}/prisma-model.hbs`,
+
+  // untested
+  apiTest: `${templateBasePath}/api-test.hbs`,
+  service: `${templateBasePath}/service.hbs`,
+  componentTest: `${templateBasePath}/component-test.hbs`,
+  apiRoute: `${templateBasePath}/api-route.hbs`,
+  index: `${templateBasePath}/index.hbs`,
+  store: `${templateBasePath}/store.hbs`,
+  component: `${templateBasePath}/component.hbs`,
+  e2e: `${templateBasePath}/e2e-test.hbs`,
 };
