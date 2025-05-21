@@ -20,7 +20,7 @@ export const GenerateActionsForFeatureAssets = (
   zodSchemas?.forEach((schemaName) => {
     actions.push({
       type: "add",
-      path: targetPaths.schema(featureName, schemaName),
+      path: targetPaths.schema({feature:featureName, name:schemaName}),
       templateFile: templatePaths.zodSchema,
       data: { name: schemaName },
     });
@@ -29,7 +29,7 @@ export const GenerateActionsForFeatureAssets = (
   hooks?.forEach((hookName) => {
     actions.push({
       type: "add",
-      path: targetPaths.hook(featureName, hookName),
+      path: targetPaths.hook({ feature: featureName, name: hookName }),
       templateFile: templatePaths.hook,
       data: { name: hookName },
     });
@@ -38,7 +38,7 @@ export const GenerateActionsForFeatureAssets = (
   types?.forEach((typeName) => {
     actions.push({
       type: "add",
-      path: targetPaths.type(featureName, typeName),
+      path: targetPaths.type({ feature: featureName, name: typeName }),
       templateFile: templatePaths.type,
       data: { name: typeName },
     });
@@ -47,7 +47,7 @@ export const GenerateActionsForFeatureAssets = (
   utils?.forEach((utilName) => {
     actions.push({
       type: "add",
-      path: targetPaths.util(featureName, utilName),
+      path: targetPaths.util({ feature: featureName, name: utilName }),
       templateFile: templatePaths.util,
       data: { name: utilName },
     });
@@ -56,7 +56,7 @@ export const GenerateActionsForFeatureAssets = (
   constants?.forEach((constName) => {
     actions.push({
       type: "add",
-      path: targetPaths.constant(featureName, constName),
+      path: targetPaths.constant({ feature: featureName, name: constName }),
       templateFile: templatePaths.constant,
       data: { name: constName },
     });

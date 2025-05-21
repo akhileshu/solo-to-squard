@@ -13,8 +13,8 @@ export const GenerateActionsForFeaturePages = (
     actions.push({
       type: "add",
       // path: `src/features/${feature.name}/pages${page}/page.tsx`,
-      path: targetPaths.page(page),
-      templateFile: templatePaths.pageRoute,
+      path: targetPaths.routes.page(page),
+      templateFile: templatePaths.routes.page,
       data: {
         name: pageName,
         components: feature.components,

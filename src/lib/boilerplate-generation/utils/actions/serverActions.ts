@@ -13,8 +13,8 @@ export const GenerateActionsForServerActions = (
   if (serverActions?.generateCRUD) {
     actions.push({
       type: "add",
-      path: targetPaths.serverAction(feature.name, "crud"),
-      templateFile: templatePaths.serverActionsCRUD,
+      path: targetPaths.serverActions.serverAction(feature.name, "crud"),
+      templateFile: templatePaths.serverActions.serverActionsCRUD,
       data: {
         name: feature.name, // For pascalCase, camelCase
         schemaName: feature.name, // or use a different one if needed
@@ -27,12 +27,12 @@ export const GenerateActionsForServerActions = (
     serverActions.custom.forEach((customAction) => {
       actions.push({
         type: "add",
-        path: targetPaths.serverAction(
+        path: targetPaths.serverActions.serverAction(
           feature.name,
           "custom",
           customAction.operation
         ),
-        templateFile: templatePaths.serverActionsCustom,
+        templateFile: templatePaths.serverActions.serverActionsCustom,
         data: {
           ...customAction,
           featureName: feature.name,
@@ -49,8 +49,8 @@ export const GenerateActionsForServerActions = (
 
     actions.push({
       type: "add",
-      path: targetPaths.serverActionsIndex(feature.name),
-      templateFile: templatePaths.serverActionsIndex,
+      path: targetPaths.serverActions.serverActionsIndex(feature.name),
+      templateFile: templatePaths.serverActions.serverActionsIndex,
       data: {
         name: feature.name,
         customActions,

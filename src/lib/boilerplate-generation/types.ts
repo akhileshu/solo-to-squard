@@ -18,7 +18,7 @@ export interface FeatureConfig {
 
 import { Answers } from "inquirer";
 
-type RenderingComponentConfig = {
+export type RenderingComponentConfig = {
   name: string;
   option?: {
     generateTestFile?: boolean;
@@ -26,26 +26,27 @@ type RenderingComponentConfig = {
     renderAsList?: boolean; // true = render list (of detail cards), false/undefined = render detail card
   };
 };
-type ComponentConfig = {
+export type ComponentConfig = {
   name: string;
   option?: {
     generateTestFile?: boolean;
   };
 };
 
+export type FormType = "create" | "edit" | "delete";
+export type UIType = "table" | "modal";
+export const formTypes: FormType[] = ["create", "edit", "delete"];
+export const uiTypes: UIType[] = ["table", "modal"];
+
+
+
 type FeatureComponents = {
-  rendering?: RenderingComponentConfig[]; // just one list, no client/server split
-  forms?: {
-    create?: ComponentConfig[];
-    edit?: ComponentConfig[];
-    delete?: ComponentConfig[];
-  };
-  ui?: {
-    tables?: ComponentConfig[];
-    modals?: ComponentConfig[];
-  };
+  rendering?: RenderingComponentConfig[];
+  forms?: Partial<Record<FormType, ComponentConfig[]>>;
+  ui?: Partial<Record<UIType, ComponentConfig[]>>;
 };
 
+export type CRUDOperation = "create" | "read" | "update" | "delete";
 export interface FeatureConfig {
   name: string;
   // components?: string[];
@@ -54,7 +55,7 @@ export interface FeatureConfig {
   serverActions?: {
     generateCRUD?: boolean;
     custom: {
-      operation: "create" | "read" | "update" | "delete";
+      operation: CRUDOperation;
       name: string;
     }[];
   };

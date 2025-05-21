@@ -7,7 +7,7 @@ import {
   getDefaultParts,
   getPartChoices,
 } from "./src/lib/boilerplate-generation/utils/prompts";
-import { getActionsForFeature } from "./src/lib/boilerplate-generation/utils/actions/actions";
+import { getActionsForFeature } from "./src/lib/boilerplate-generation/utils/actions";
 
 /**
  *

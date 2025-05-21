@@ -1,157 +1,156 @@
+import { CRUDOperation } from "../types";
 import { toJoinedKebabCase, toPascalCase } from "./helpers";
 
 const featureBasePath = "src/features";
+const f = (path: string) => `${featureBasePath}${path}`;
+
+type FeaturePathParams = {
+  feature: string;
+  name: string;
+};
+
+type ComponentPathParams = {
+  featureName: string;
+  componentName: string;
+};
+
+type ServerActionType = "custom" | "crud";
 
 export const targetPaths = {
-  /**ex: src/app/(with-layout)/video/upload/page.tsx */
-  page: (page: string) => `src/app/(with-layout)/${page}/page.tsx`,
-
-  /**
-   * @example
-   * targetPaths.schema("video", "videoInput")
-   * // → src/features/video/schemas/videoInputSchema.ts
-   */
-  schema: (feature: string, name: string) =>
-    `${featureBasePath}/${feature}/schemas/${name}Schema.ts`,
-
-  /**
-   * @example
-   * targetPaths.hook("video", "uploadVideo")
-   * // → src/features/video/hooks/useUploadVideo.ts
-   */
-  hook: (feature: string, name: string) =>
-    `${featureBasePath}/${feature}/hooks/use${toPascalCase(name)}.ts`,
-
-  /**
-   * @example
-   * targetPaths.type("video", "video")
-   * // → src/features/video/types/videoTypes.ts
-   */
-  type: (feature: string, name: string) =>
-    `${featureBasePath}/${feature}/types/${name}Types.ts`,
-
-  /**
-   * @example
-   * targetPaths.util("video", "formatDuration")
-   * // → src/features/video/utils/formatDuration.ts
-   */
-  util: (feature: string, name: string) =>
-    `${featureBasePath}/${feature}/utils/${name}.ts`,
-
-  /**
-   * @example
-   * targetPaths.constant("video", "videoStatus")
-   * // → src/features/video/constants/videoStatus.ts
-   */
-  constant: (feature: string, name: string) =>
-    `${featureBasePath}/${feature}/constants/${name}.ts`,
-
-  /**
-   * Examples:
-   * - For a detail renderer: `"src/features/user/components/User/user-renderer.tsx"`
-   * - For a list renderer: `"src/features/user/components/User/user-list-renderer.tsx"`
-   */
-  renderServer: (
-    featureName: string,
-    componentName: string,
-    renderAsList: boolean
-  ) =>
-    `${featureBasePath}/${featureName}/components/${componentName}/${toJoinedKebabCase(
-      componentName,
-      renderAsList ? "list-renderer" : "renderer"
-    )}.tsx`,
-
-  /**
-   * Examples:
-   *
-   * // For CRUD actions of a feature called "video":
-   * serverAction("video", "crud")
-   * // → "src/features/video/actions/video-crud-actions.tsx"
-   *
-   * // For a custom "read" action of the feature "video":
-   * serverAction("video", "custom", "read")
-   * // → "src/features/video/actions/video-read-action.tsx"
-
-   */
-  serverAction: (
-    featureName: string,
-    type: "custom" | "crud",
-    operation?: "create" | "read" | "update" | "delete"
-  ) =>
-    `${featureBasePath}/${featureName}/actions/${toJoinedKebabCase(
-      featureName,
-      type === "custom" ? `${operation}-action` : "CRUD-actions"
-    )}.tsx`,
-
-  serverActionsIndex: (featureName: string) =>
-    `${featureBasePath}/${featureName}/actions/index.ts`,
-
+  /** ex: prismaModel("user") → prisma/models/user.prisma */
   prismaModel: (schemaName: string) => `prisma/models/${schemaName}.prisma`,
 
-  /**
-   * Examples:
-   * - For a detail card: `"src/features/user/components/User/User-Detail-Card.tsx"`
-   * - For a list view: `"src/features/user/components/User/User-List-View.tsx"`
-   */
-  renderClient: (
-    featureName: string,
-    componentName: string,
-    renderAsList: boolean
-  ) =>
-    `${featureBasePath}/${featureName}/components/${componentName}/${toJoinedKebabCase(
-      componentName,
-      renderAsList ? "List-View" : "Detail-Card"
-    )}.tsx`,
+  /** ex: schema("video", "videoInput") → src/features/video/schemas/videoInputSchema.ts */
+  schema: ({ feature, name }: FeaturePathParams) =>
+    f(`/${feature}/schemas/${name}Schema.ts`),
 
-  /**ex : src/features/user/components/user/edit-user-form.tsx*/
-  form: (featureName: string, componentName: string, formType: string) =>
-    `${featureBasePath}/${featureName}/components/${componentName}/${toJoinedKebabCase(
-      formType,
-      componentName,
-      "form"
-    )}.tsx`,
+  /** ex: hook("video", "uploadVideo") → src/features/video/hooks/useUploadVideo.ts */
+  hook: ({ feature, name }: FeaturePathParams) =>
+    f(`/${feature}/hooks/use${toPascalCase(name)}.ts`),
 
-  /**ex: src/features/user/components/user/user_table.tsx*/
-  ui: (featureName: string, componentName: string, uiType: string) =>
-    `${featureBasePath}/${featureName}/components/${componentName}/${toJoinedKebabCase(
-      componentName,
-      uiType
-    )}.tsx`,
+  /** ex: type("video", "video") → src/features/video/types/videoTypes.ts */
+  type: ({ feature, name }: FeaturePathParams) =>
+    f(`/${feature}/types/${name}Types.ts`),
 
-  /*
+  /** ex: util("video", "formatDuration") → src/features/video/utils/formatDuration.ts */
+  util: ({ feature, name }: FeaturePathParams) =>
+    f(`/${feature}/utils/${name}.ts`),
+
+  /** ex: constant("video", "videoStatus") → src/features/video/constants/videoStatus.ts */
+  constant: ({ feature, name }: FeaturePathParams) =>
+    f(`/${feature}/constants/${name}.ts`),
+
+  routes: {
+    /** ex: src/app/(with-layout)/video/upload/page.tsx */
+    page: (page: string) => `src/app/(with-layout)/${page}/page.tsx`,
+  },
+
+  components: {
+    /** ex: renderServer({...}, false) → .../user-renderer.tsx | true → .../user-list-renderer.tsx */
+    renderServer: (
+      { featureName, componentName }: ComponentPathParams,
+      renderAsList: boolean
+    ) =>
+      f(
+        `/${featureName}/components/${componentName}/${toJoinedKebabCase(
+          componentName,
+          renderAsList ? "list-renderer" : "renderer"
+        )}.tsx`
+      ),
+
+    /** ex: renderClient({...}, false) → .../User-Detail-Card.tsx | true → .../User-List-View.tsx */
+    renderClient: (
+      { featureName, componentName }: ComponentPathParams,
+      renderAsList: boolean
+    ) =>
+      f(
+        `/${featureName}/components/${componentName}/${toJoinedKebabCase(
+          componentName,
+          renderAsList ? "List-View" : "Detail-Card"
+        )}.tsx`
+      ),
+
+    /** ex: form({...}, "edit") → .../edit-user-form.tsx */
+    form: (
+      { featureName, componentName }: ComponentPathParams,
+      formType: string
+    ) =>
+      f(
+        `/${featureName}/components/${componentName}/${toJoinedKebabCase(
+          formType,
+          componentName,
+          "form"
+        )}.tsx`
+      ),
+
+    /** ex: ui({...}, "table") → .../user-table.tsx */
+    ui: ({ featureName, componentName }: ComponentPathParams, uiType: string) =>
+      f(
+        `/${featureName}/components/${componentName}/${toJoinedKebabCase(
+          componentName,
+          uiType
+        )}.tsx`
+      ),
+  },
+
+  serverActions: {
+    /** ex: serverAction("video", "crud") → .../video-crud-actions.tsx | "custom", "read" → .../video-read-action.tsx */
+    serverAction: (
+      featureName: string,
+      type: ServerActionType,
+      operation?: CRUDOperation
+    ) =>
+      f(
+        `/${featureName}/actions/${toJoinedKebabCase(
+          featureName,
+          type === "custom" ? `${operation}-action` : "crud-actions"
+        )}.tsx`
+      ),
+
+    /** ex: serverActionsIndex("video") → .../actions/index.ts */
+    serverActionsIndex: (featureName: string) =>
+      f(`/${featureName}/actions/index.ts`),
+  },
+
+  /** ⚠️ untested , ex: componentTest("video", "upload") → .../upload.test.tsx */
+  componentTest: ({ feature, name }: FeaturePathParams) =>
+    f(`/${feature}/components/${name}/${name}.test.tsx`),
+};
+
+
+
+
+
+
+/*
   component: (feature: string, name: string) =>
-    `${featureBasePath}/${feature}/components/${name}/${name}.tsx`,
+    f(`/${feature}/components/${name}/${name}.tsx`,
 
   uiTable: (feature: string, name: string) =>
-    `${featureBasePath}/${feature}/components/${name}/${toPascalCase(
+    f(`/${feature}/components/${name}/${toPascalCase(
       name
     )}Table.tsx`,
 
   uiModal: (feature: string, name: string) =>
-    `${featureBasePath}/${feature}/components/${name}/${toPascalCase(
+    f(`/${feature}/components/${name}/${toPascalCase(
       name
     )}Modal.tsx`,
 
   formCreate: (feature: string, name: string) =>
-    `${featureBasePath}/${feature}/components/${name}/Create${toPascalCase(
+    f(`/${feature}/components/${name}/Create${toPascalCase(
       name
     )}Form.tsx`,
 
   formEdit: (feature: string, name: string) =>
-    `${featureBasePath}/${feature}/components/${name}/Edit${toPascalCase(
+    f(`/${feature}/components/${name}/Edit${toPascalCase(
       name
     )}Form.tsx`,
 
   formDelete: (feature: string, name: string) =>
-    `${featureBasePath}/${feature}/components/${name}/Delete${toPascalCase(
+    f(`/${feature}/components/${name}/Delete${toPascalCase(
       name
     )}Form.tsx`,
 
-  store: (feature: string) => `${featureBasePath}/${feature}/store.ts`,
+  store: (feature: string) => f(`/${feature}/store.ts`),
 
     */
-
-  /** componentTest : method being used but not tested */
-  componentTest: (feature: string, name: string) =>
-    `${featureBasePath}/${feature}/components/${name}/${name}.test.tsx`,
-};

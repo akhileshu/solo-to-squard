@@ -1,9 +1,9 @@
 import { ActionType } from "plop";
 import { FeatureConfig } from "../../types";
-import { GenerateActionsForFeatureAssets } from "./GenerateActionsForFeatureAssets";
-import { GenerateActionsForFeatureComponents } from "./GenerateActionsForFeatureComponents";
-import { GenerateActionsForFeaturePages } from "./GenerateActionsForFeaturePages";
-import { GenerateActionsForServerActions } from "./GenerateActionsForServerActions";
+import { GenerateActionsForFeatureAssets } from "./assets";
+import { GenerateActionsForFeatureComponents } from "./components";
+import { GenerateActionsForFeaturePages } from "./pages";
+import { GenerateActionsForServerActions } from "./serverActions";
 
 export const getActionsForFeature = (feature: FeatureConfig) => {
   const actions: ActionType[] = [];

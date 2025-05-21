@@ -55,7 +55,7 @@ export const featuresList: FeatureConfig[] = [
         ],
       },
       ui: {
-        tables: [
+        table: [
           {
             name: "videoTable",
             option: {
@@ -63,7 +63,7 @@ export const featuresList: FeatureConfig[] = [
             },
           },
         ],
-        modals: [
+        modal: [
           {
             name: "confirmDeleteVideo",
             option: {
